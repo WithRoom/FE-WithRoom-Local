@@ -34,4 +34,8 @@ yarn-error.log*
 # Built Visual Studio Code Extensions
 *.vsix
 
+# environment 
 .env
+
+# package-lock json
+package-lock.json
