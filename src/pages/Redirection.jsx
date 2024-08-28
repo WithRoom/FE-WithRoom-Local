@@ -4,11 +4,12 @@ import axios from 'axios';
 
 const Redirection = () => {
     const code = new URLSearchParams(window.location.search).get('code');
+
     const navigate = useNavigate();
 
     useEffect(() => {
         console.log(process.env.REACT_APP_URL);
-        axios.post(`${process.env.REACT_APP_URL}/kakaoLogin`, { code }) // 백엔드에 http://domain/kakaoLogin 경로로 code 전달
+        axios.post(`${process.env.REACT_APP_URL}/kakaoLogin`, { code : code }) // 백엔드에 http://domain/kakaoLogin 경로로 code 전달
             .then((result) => {
                 // 토큰 검증 후 리턴 값 result
                 console.log(result.data);
