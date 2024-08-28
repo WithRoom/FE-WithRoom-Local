@@ -8,15 +8,19 @@ const Redirection = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log(process.env.REACT_APP_URL);
-        axios.post(`${process.env.REACT_APP_URL}/kakaoLogin`, { code : code }) // 백엔드에 http://domain/kakaoLogin 경로로 code 전달
+        console.log(process.env.REACT_APP_DOMAIN);
+        axios.post(`${process.env.REACT_APP_DOMAIN}/kakaoLogin`, { code : code }) 
             .then((result) => {
-                // 토큰 검증 후 리턴 값 result
+                console.log(result);
                 console.log(result.data);
 
-                localStorage.setItem('name', result.data.user_name); // 세션 or 토큰 처리 필요
+                localStorage.setItem('name', result.data.user_name); 
                 navigate('/loginSuccess');
+            })
+            .catch((error) => {
+                console.error("Error during login:", error);
             });
+            
     }, [code, navigate]);
 
     return <div>로그인 중입니다.</div>;
