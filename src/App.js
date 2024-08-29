@@ -10,7 +10,7 @@ const App = () => {
 		<div className='App'>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<Home />}></Route>
+					<Route path="/home" element={<Home />}></Route>
 					<Route path="/login" element={<SocialKakao />}></Route> 
 					<Route path="/study" element={<Study />}></Route>
 					<Route exact path='/kakao/callback' element={<Redirection />} />

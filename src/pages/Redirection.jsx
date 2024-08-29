@@ -9,13 +9,10 @@ const Redirection = () => {
 
     useEffect(() => {
         console.log(process.env.REACT_APP_DOMAIN);
-        axios.post(`${process.env.REACT_APP_DOMAIN}/kakaoLogin`, { code : code }) 
+        axios.post(`/login/kakao`, { code : code }) 
             .then((result) => {
-                console.log(result);
-                console.log(result.data);
-
-                localStorage.setItem('name', result.data.user_name); 
-                navigate('/loginSuccess');
+                localStorage.setItem('accessToken', result.data.accessToken); 
+                navigate('/home');
             })
             .catch((error) => {
                 console.error("Error during login:", error);
