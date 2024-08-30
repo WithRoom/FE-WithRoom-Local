@@ -4,7 +4,7 @@ import kakaoimg from '../../images/kakao.png';
 
 const Header = () => {
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+    <div className="d-flex flex-column justify-content-center align-items-center vh-100" style={{textAlign : 'center'}}>
       <Navbar.Brand href="#" className="mx-2 mt-3">소개</Navbar.Brand>
       <Link to="/login" className="mx-2 mt-3">
         <Button variant="outline-primary" style={{ backgroundColor: 'white', borderColor: 'yellow' }}>
