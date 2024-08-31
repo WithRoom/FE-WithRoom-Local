@@ -8,10 +8,10 @@ const Redirection = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.post(`/login/kakao`, { code : code }) 
+        axios.post(process.env.REACT_APP_DOMAIN + `/login/kakao`, { code : code }) 
             .then((result) => {
                 localStorage.setItem('accessToken', result.data.accessToken); 
-                navigate('/home');
+                navigate('/register');
             })
             .catch((error) => {
                 console.error("Error during login:", error);
