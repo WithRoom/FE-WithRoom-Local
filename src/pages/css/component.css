@@ -11,13 +11,3 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
   
-  .dropdown a {
-    display: block;
-    padding: 8px 16px;
-    text-decoration: none;
-    color: black;
-  }
-  
-  .dropdown a:hover {
-    background-color: #ddd;
-  }

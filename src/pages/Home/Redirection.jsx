@@ -8,7 +8,6 @@ const Redirection = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log(process.env.REACT_APP_DOMAIN);
         axios.post(`/login/kakao`, { code : code }) 
             .then((result) => {
                 localStorage.setItem('accessToken', result.data.accessToken); 
