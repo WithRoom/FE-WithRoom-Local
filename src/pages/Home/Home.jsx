@@ -8,7 +8,6 @@ const Home = () => {
   return (
     <>
     <Header />
-    
       <Container fluid className="px-0">
         <Container className="py-4">
           <Row className="justify-content-center mb-4">
