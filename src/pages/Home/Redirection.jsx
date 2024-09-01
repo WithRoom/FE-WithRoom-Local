@@ -10,15 +10,14 @@ const Redirection = () => {
     useEffect(() => {
         axios.post(process.env.REACT_APP_DOMAIN + `/login/kakao`, { code : code }) 
             .then((result) => {
-                localStorage.setItem('accessToken', result.data.accessToken); 
+                console.log(result);
 
-                // 존재하는 유저인지 파악
-                // 로그인 및 회원가입
-                if(result.data.accessToken) {
-                    navigate('/home');
-                }else{
+                if(result.data.isUser === false){ 
                     navigate('/register');
+                }else{
+                    navigate('/home');
                 }
+                localStorage.setItem('accessToken', result.data.accessToken);               
             })
             .catch((error) => {
                 console.error("Error during login:", error);
