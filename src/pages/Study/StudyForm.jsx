@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Form, Row, Col, Image, Button, Container, ButtonGroup } from 'react-bootstrap';
+import { Form, Row, Col, Button, Container, ButtonGroup } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import axios from 'axios';
 
 import Header from '../components/Header';
 
@@ -20,9 +21,36 @@ const StudyForm = () => {
   const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
   const studyTags = ['개념학습', '응용/실용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'];
 
+  const createRegisterForm = (e) => {
+    e.preventDefault();
+
+    const formData = {
+      title,
+      type,
+      memberCount,
+      days,
+      startDate,
+      duration,
+      description,
+      tags,
+      difficulty,
+      searchTags,
+    };
+
+    axios.post(`${process.env.REACT_APP_DOMAIN}/study/create`, {study : formData})
+      .then((response) => {
+        console.log(response);
+        // 성공 시 처리 로직 추가
+      })
+      .catch((error) => {
+        console.error("Error during form submission:", error);
+        // 실패 시 처리 로직 추가
+      });
+  };
+
   return (
     <Container>
-      <Form>
+      <Form onSubmit={createRegisterForm}>
         <Row className="mb-4">
           <Col md={6}>
             <div className="position-relative" style={{height: '400px', background: '#f8f9fa', border: '1px solid #dee2e6'}}>
@@ -39,7 +67,7 @@ const StudyForm = () => {
           </Col>
           <Col md={6}>
             <div className="text-end mt-4">
-                <Button variant="secondary">스터디 생성</Button>
+                <Button variant="secondary" type="submit">스터디 생성</Button>
             </div>
             <Form.Group className="mb-3">
               <Form.Label>스터디 제목<span className="text-danger">*</span></Form.Label>
@@ -186,14 +214,13 @@ const StudyForm = () => {
           <Form.Label>검색 태그<span className="text-danger">*</span></Form.Label>
           <Form.Control
             type="text"
-            placeholder="최대 5개까지 입력가능함 (20자 제한)"
+            placeholder="최대 5개까지 입력가능 (20자 제한)"
             value={searchTags}
             onChange={(e) => setSearchTags(e.target.value)}
             maxLength={20}
           />
         </Form.Group>
       </Form>
-    
     </Container>
   );
 };
