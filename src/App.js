@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';
 import Redirection from './pages/Home/Redirection';
 import StudyGroupCard from './pages/Study/StudyGroupList';
 import Register from './pages/Register/Register';
+import NotFound from './pages/common/NotFound';
 
 const App = () => {
 	return (
@@ -17,6 +18,7 @@ const App = () => {
 					<Route path="/study" element={<StudyGroupCard />}></Route>
 					<Route exact path='/kakao/callback' element={<Redirection />} />
 					<Route path="/register" element={<Register />}></Route>
+					<Route path="*" element={<NotFound to="/404" />} />
   				</Routes>
 			</BrowserRouter>
 		</div>

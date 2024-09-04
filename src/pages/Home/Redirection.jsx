@@ -20,6 +20,7 @@ const Redirection = () => {
                 localStorage.setItem('accessToken', result.data.accessToken);               
             })
             .catch((error) => {
+                
                 console.error("Error during login:", error);
             });
             

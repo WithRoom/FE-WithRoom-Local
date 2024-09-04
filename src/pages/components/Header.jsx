@@ -19,7 +19,7 @@ const Header = () => {
       setSearchQuery('');
     })
     .catch((error) => {
-      setSearchQuery(' ');
+      setSearchQuery('');
       console.error("Error during search:", error);
     }); 
   };
