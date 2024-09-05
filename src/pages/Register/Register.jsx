@@ -33,8 +33,8 @@ const Register = () => {
         alert(results);
         
         saveSurveyResults(
-            "https://studywithme.store/register",
-            survey.data,
+            "https://studywithme.store/member/craete/info",
+            results,
             accessToken
           )
 

@@ -8,11 +8,11 @@ const Redirection = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.post(process.env.REACT_APP_DOMAIN + `/login/kakao`, { code : code }) 
+        axios.post(process.env.REACT_APP_DOMAIN + `/oauth/kakao/login`, { code : code }) 
             .then((result) => {
                 console.log(result);
 
-                if(result.data.isUser === false){ 
+                if(result.data.firstJoin === false){ 
                     navigate('/register');
                 }else{
                     navigate('/home');

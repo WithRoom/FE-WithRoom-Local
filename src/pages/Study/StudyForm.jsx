@@ -25,19 +25,25 @@ const StudyForm = () => {
     e.preventDefault();
 
     const formData = {
-      title,
-      type,
-      memberCount,
-      days,
-      startDate,
-      duration,
-      description,
-      tags,
-      difficulty,
-      searchTags,
+      studyInfo: {
+        studyImage: '', 
+        title,
+        type,
+        recruitPeople: memberCount,
+        introduction: description,
+        topic: tags.join(', '),
+        difficulty,
+        tag: searchTags,
+      },
+      studySchedule: {
+        weekDay: days.join(', '),
+        startDay: startDate,
+        period: duration,
+        time: '', 
+      },
     };
 
-    axios.post(`${process.env.REACT_APP_DOMAIN}/study/create`, {study : formData})
+    axios.post(`${process.env.REACT_APP_DOMAIN}/study/create`, formData)
       .then((response) => {
         console.log(response);
         // 성공 시 처리 로직 추가
