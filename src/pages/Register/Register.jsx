@@ -1,73 +1,98 @@
-// 카카오 로그인 후 회원 가입 폼
-// SurveyJS 라이브러리를 사용하여 회원 가입 폼을 구성
-
 import React, { useState } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
-import { Survey } from 'survey-react-ui';
-import { Model } from 'survey-core';
-import { useCallback } from 'react';
-
-import 'survey-core/defaultV2.min.css';
-
-const surveyJson = {
-    elements: [{
-      name: "Area",
-      title: "선호하는 지역을 입력하세요.",
-      type: "text"
-    }, {
-      name: "Interests",
-      title: "나의 관심 분야를 입력하세요.",
-      type: "text"
-    }]
-  };
+import Header from '../components/Header'; // Assuming Header is imported from another file
+import { Container, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
 
 const Register = () => {
-    const survey = new Model(surveyJson);
+  const [registerForm, setRegisterForm] = useState({
+    nickName: '',
+    preferredArea: '',
+    interest: ''
+  });
 
-    const accessToken = localStorage.getItem('accessToken');
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterForm({
+      ...registerForm,
+      [name]: value
+    });
+  };
 
-    const alertResults = useCallback((sender) => {
-        const results = JSON.stringify(sender.data);
-        console.log(results);
-        alert(results);
-        
-        saveSurveyResults(
-            "https://studywithme.store/member/craete/info",
-            results,
-            accessToken
-          )
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('accessToken'); // Retrieve token from local storage
 
-      }, []);
+    if (!token) {
+      alert('No token found. Please log in.');
+      return;
+    }
 
-      survey.onComplete.add(alertResults);
+    const url = process.env.REACT_APP_DOMAIN;
 
-    return <Survey model={survey} />;
+    saveUser('/member/create/info', registerForm, token);
+  };
+
+  return (
+    <div>
+      <Header />
+      <Container>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formNickName">
+            <Form.Label>Nickname:</Form.Label>
+            <Form.Control
+              type="text"
+              name="nickName"
+              value={registerForm.nickName}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="formPreferredArea">
+            <Form.Label>Preferred Area:</Form.Label>
+            <Form.Control
+              type="text"
+              name="preferredArea"
+              value={registerForm.preferredArea}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="formInterest">
+            <Form.Label>Interest:</Form.Label>
+            <Form.Control
+              type="text"
+              name="interest"
+              value={registerForm.interest}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Register
+          </Button>
+        </Form>
+      </Container>
+    </div>
+  );
+};
+
+function saveUser(url, json, token) {
+  axios.post(url, json, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  .then(response => {
+    console.log(response);
+    alert('Registration successful');
+    window.location.href = '/home';
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    if (error.response && error.response.status === 401) {
+      alert('Unauthorized. Please log in again.');
+    } else {
+      alert('Failed to save survey results');
+    }
+  });
 }
 
-function saveSurveyResults(url, json, token) {
-    fetch(url, {
-      method: 'POST',
-      mode: 'no-cors', // CORS 우회 설정
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(json)
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log(response)
-        alert('로그인 성공');
-        window.location.href = '/home';
-      } else {
-       alert('Failed to save survey results');
-      }
-    })
-    .catch(error => {
-     
-    });
-  }
-
 export default Register;
-

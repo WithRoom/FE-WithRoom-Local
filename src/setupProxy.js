@@ -8,4 +8,11 @@ module.exports = function(app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    '/member/create/info',
+    createProxyMiddleware({
+      target: process.env.REACT_APP_DOMAIN,
+      changeOrigin: true,
+    })
+  );
 };

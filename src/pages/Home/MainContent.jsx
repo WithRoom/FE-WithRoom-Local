@@ -7,7 +7,6 @@ const MainContent = () => {
     <Container className="py-4">
       <Row className="mb-4">
         <Col>
-          <h1 className="mb-3">전체</h1>
           <Nav variant="tabs" defaultActiveKey="/home">
             <Nav.Item>
               <Nav.Link href="/home">전체</Nav.Link>

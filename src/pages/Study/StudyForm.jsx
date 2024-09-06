@@ -4,8 +4,6 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 
-import Header from '../components/Header';
-
 const StudyForm = () => {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('');
@@ -29,7 +27,7 @@ const StudyForm = () => {
         studyImage: '', 
         title,
         type,
-        recruitPeople: memberCount,
+        recruitPeople: parseInt(memberCount, 10),
         introduction: description,
         topic: tags.join(', '),
         difficulty,
@@ -43,15 +41,21 @@ const StudyForm = () => {
       },
     };
 
-    axios.post(`${process.env.REACT_APP_DOMAIN}/study/create`, formData)
-      .then((response) => {
-        console.log(response);
-        // 성공 시 처리 로직 추가
-      })
-      .catch((error) => {
-        console.error("Error during form submission:", error);
-        // 실패 시 처리 로직 추가
-      });
+    const token = localStorage.getItem('accessToken');
+    console.log('Token:', token); // Debugging: Check the token
+
+    axios.post('/study/create', formData, {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error("Error during form submission:", error);
+    });
   };
 
   return (
