@@ -8,20 +8,7 @@ const Redirection = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        if (!token) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Unauthorized',
-                text: 'No token found. Please log in.',
-            });
-            return;
-        }
-
         axios.post('/oauth/kakao/login', { code: code }, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
         })
         .then((result) => {
             console.log(result);

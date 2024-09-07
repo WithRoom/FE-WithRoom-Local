@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
-  const isAuthenticated = !!localStorage.getItem('accessToken');
+  const isAuthenticated = localStorage.getItem('accessToken');
 
   console.log(isAuthenticated)
 

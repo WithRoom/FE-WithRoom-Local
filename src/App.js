@@ -7,6 +7,7 @@ import StudyGroupList from './pages/Study/StudyGroupList';
 import Register from './pages/Register/Register';
 import NotFound from './pages/common/NotFound';
 import PrivateRoute from './pages/common/PrivateRoute';
+import Me from './pages/Home/Me';
 
 const App = () => {
   return (
@@ -19,6 +20,8 @@ const App = () => {
           <Route path="/study" element={<PrivateRoute element={StudyGroupList} />} />
           <Route exact path='/kakao/callback' element={<Redirection />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/me" element={<PrivateRoute element={Me}/>} />
+
           <Route path="*" element={<NotFound to="/404" />} />
         </Routes>
       </BrowserRouter>

@@ -61,6 +61,7 @@ const StudyForm = () => {
         const response = await axios.post('/image/upload/study', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`,
             },
         });
         const imageUrl = response.data.url; 
