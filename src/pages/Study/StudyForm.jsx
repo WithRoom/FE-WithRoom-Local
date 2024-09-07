@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button, Container, ButtonGroup } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const StudyForm = () => {
   const [title, setTitle] = useState('');
@@ -15,16 +16,94 @@ const StudyForm = () => {
   const [tags, setTags] = useState([]);
   const [difficulty, setDifficulty] = useState('');
   const [searchTags, setSearchTags] = useState('');
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
+  const [file, setFile] = useState(null);  
 
   const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
   const studyTags = ['개념학습', '응용/실용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'];
 
-  const createRegisterForm = (e) => {
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFile(file);
+    const validExtensions = ['image/jpeg', 'image/png', 'image/gif'];
+
+    if (file && validExtensions.includes(file.type)) {
+      setImage(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid file type',
+        text: 'Please select an image file (jpeg, png, gif).',
+      });
+    }
+  };
+
+  const uploadImageToS3 = async (e) => {
     e.preventDefault();
+    if (!image) return '';
+
+    const token = localStorage.getItem('accessToken');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    console.log('Uploading image:', formData);
+
+    try {
+        const response = await axios.post('/image/upload/study', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        const imageUrl = response.data.url; 
+        setImageUrl(imageUrl);
+        Swal.fire({
+            icon: 'success',
+            title: 'Image uploaded successfully',
+        });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error uploading image',
+            text: error.message,
+        });
+    }
+  };
+
+  const createRegisterForm = async (e) => {
+    e.preventDefault();
+
+    if (!imageUrl) {
+      Swal.fire({
+        icon: 'error',
+        title: '이미지를 업로드해주세요!',
+      });
+      return;
+    }
+
+    // Validation
+    if (!title || !type || !memberCount || !days.length || !startDate || !duration || !description || !tags.length || !difficulty || !searchTags || !imageUrl) {
+      Swal.fire({
+        icon: 'error',
+        title: '모든 필드를 채워주세요!',
+      });
+      return;
+    }
+
+    console.log('Form submitted:', imageUrl, title, type, memberCount, days, startDate, duration, description, tags, difficulty, searchTags);
 
     const formData = {
       studyInfo: {
-        studyImage: '', 
+        studyImage: imageUrl,
         title,
         type,
         recruitPeople: parseInt(memberCount, 10),
@@ -37,12 +116,12 @@ const StudyForm = () => {
         weekDay: days.join(', '),
         startDay: startDate,
         period: duration,
-        time: '', 
+        time: '',
       },
     };
 
     const token = localStorage.getItem('accessToken');
-    console.log('Token:', token); // Debugging: Check the token
+    console.log('Token:', token);
 
     axios.post('/study/create', formData, {
       headers: {
@@ -52,9 +131,18 @@ const StudyForm = () => {
     })
     .then((response) => {
       console.log(response);
+      Swal.fire({
+        icon: 'success',
+        title: 'Study created successfully',
+      });
     })
     .catch((error) => {
       console.error("Error during form submission:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error during form submission',
+        text: error.message,
+      });
     });
   };
 
@@ -64,16 +152,22 @@ const StudyForm = () => {
         <Row className="mb-4">
           <Col md={6}>
             <div className="position-relative" style={{height: '400px', background: '#f8f9fa', border: '1px solid #dee2e6'}}>
-              <div className="position-absolute top-50 start-50 translate-middle text-center">
-                <p>대표 이미지 삽입</p>
-                <p>(권장사이즈 1200*1200px)</p>
-              </div>
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div className="position-absolute top-50 start-50 translate-middle text-center">
+                  <p>대표 이미지 삽입</p>
+                  <p>(권장사이즈 1200*1200px)</p>
+                </div>
+              )}
               <div className="position-absolute bottom-0 end-0 m-2">
                 <Button variant="light" className="rounded-circle">
                   <i className="bi bi-camera"></i>
+                  <input type="file" accept="image/*" onChange={handleImageChange} style={{ opacity: 0, position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }} />
                 </Button>
               </div>
             </div>
+            <Button variant="primary" onClick={uploadImageToS3} className="mt-2">이미지 업로드</Button>
           </Col>
           <Col md={6}>
             <div className="text-end mt-4">
@@ -233,6 +327,6 @@ const StudyForm = () => {
       </Form>
     </Container>
   );
-};
+}
 
 export default StudyForm;

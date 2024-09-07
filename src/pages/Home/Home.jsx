@@ -10,26 +10,26 @@ const Home = () => {
   const [nickName, setNickName] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      axios.get('/member/mypage/info', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      .then(response => {
-        setNickName(response.data.nickName);
-        setIsAuthenticated(true);
-      })
-      .catch(error => {
-        console.error('Error fetching user info:', error);
-        setIsAuthenticated(false);
-      });
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('accessToken');
+  //   if (token) {
+  //     axios.get(process.env.REACT_APP_DOMAIN + '/member/mypage/info', {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`
+  //       }
+  //     })
+  //     .then(response => {
+  //       setNickName(response.data.nickName);
+  //       setIsAuthenticated(true);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching user info:', error);
+  //       setIsAuthenticated(false);
+  //     });
+  //   } else {
+  //     setIsAuthenticated(false);
+  //   }
+  // }, []);
 
   return (
     <>
@@ -37,7 +37,7 @@ const Home = () => {
       <Container fluid className="px-0">
         <Container className="py-4">
           <Row className="justify-content-center mb-4">
-            <Col md="auto">
+            {/* <Col md="auto">
               <h1 className="home-header">Study With Me</h1>
               {isAuthenticated ? (
                 <div className="alert alert-success" role="alert">
@@ -48,7 +48,7 @@ const Home = () => {
                   로그인 후 이용해주세요.
                 </div>
               )}
-            </Col>
+            </Col> */}
           </Row>
         </Container>
         <CarouselFadeExample />

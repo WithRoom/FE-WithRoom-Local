@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import Header from '../components/Header'; // Assuming Header is imported from another file
+import Header from '../components/Header';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Register = () => {
   const [registerForm, setRegisterForm] = useState({
@@ -20,16 +21,17 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('accessToken'); // Retrieve token from local storage
+    const token = localStorage.getItem('accessToken'); 
 
     if (!token) {
-      alert('No token found. Please log in.');
+      Swal.fire({
+        icon: 'error',
+        title: '로그인 필요',
+        text: 'No token found. Please log in.',
+      });
       return;
     }
-
-    const url = process.env.REACT_APP_DOMAIN;
-
-    saveUser('/member/create/info', registerForm, token);
+    saveUser(process.env.REACT_APP_DOMAIN + `/member/create/info`, registerForm, token);
   };
 
   return (
@@ -74,6 +76,7 @@ const Register = () => {
 };
 
 function saveUser(url, json, token) {
+  console.log(`Request URL: ${url}`);
   axios.post(url, json, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
@@ -82,15 +85,35 @@ function saveUser(url, json, token) {
   })
   .then(response => {
     console.log(response);
-    alert('Registration successful');
+    Swal.fire({
+      icon: 'success',
+      title: '회원가입 성공',
+      text: 'Registration successful',
+      showConfirmButton: false,
+      timer: 1500
+    });
     window.location.href = '/home';
   })
   .catch(error => {
     console.error('Error:', error);
-    if (error.response && error.response.status === 401) {
-      alert('Unauthorized. Please log in again.');
+    if (error.response && error.response.status === 404) {
+      Swal.fire({
+        icon: 'error',
+        title: '경로를 찾을 수 없음',
+        text: 'Endpoint not found. Please check the URL.',
+      });
+    } else if (error.response && error.response.status === 401) {
+      Swal.fire({
+        icon: 'error',
+        title: '인증 실패',
+        text: 'Unauthorized. Please log in again.',
+      });
     } else {
-      alert('Failed to save survey results');
+      Swal.fire({
+        icon: 'error',
+        title: '회원가입 실패',
+        text: 'Failed to save survey results',
+      });
     }
   });
 }
