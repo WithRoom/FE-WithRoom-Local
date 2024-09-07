@@ -55,6 +55,10 @@ const StudyForm = () => {
     const formData = new FormData();
     formData.append('file', file);
 
+    /*
+    * file : {}
+    */
+
     console.log('Uploading image:', formData);
 
     try {
@@ -64,7 +68,12 @@ const StudyForm = () => {
                 'Authorization': `Bearer ${token}`,
             },
         });
-        const imageUrl = response.data.url; 
+    
+        console.log('Image uploaded:', response);
+    
+        const imageUrl = response.data.imageUrl; 
+
+
         setImageUrl(imageUrl);
         Swal.fire({
             icon: 'success',
@@ -82,6 +91,8 @@ const StudyForm = () => {
 
   const createRegisterForm = async (e) => {
     e.preventDefault();
+
+    console.log('imageUrl : ' ,imageUrl);
 
     if (!imageUrl) {
       Swal.fire({
@@ -136,6 +147,9 @@ const StudyForm = () => {
         icon: 'success',
         title: 'Study created successfully',
       });
+
+      // 홈으로
+      window.location.href = '/home';
     })
     .catch((error) => {
       console.error("Error during form submission:", error);

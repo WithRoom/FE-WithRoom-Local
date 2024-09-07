@@ -31,7 +31,7 @@ const Register = () => {
       });
       return;
     }
-    saveUser(process.env.REACT_APP_DOMAIN + `/member/create/info`, registerForm, token);
+    saveUser('/member/create/info', registerForm, token);
   };
 
   return (
