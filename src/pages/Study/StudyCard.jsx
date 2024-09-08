@@ -1,25 +1,77 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { FaUsers, FaHeart } from 'react-icons/fa';
+import { Heart, Users } from 'lucide-react'; // Import the Users icon
+
+const LikeButton = ({ isLiked, onClick }) => (
+  <Button 
+    variant="link" 
+    className="p-0" 
+    onClick={onClick}
+  >
+    <Heart fill={isLiked ? "red" : "none"} color={isLiked ? "red" : "black"} />
+  </Button>
+);
+
+const StudyImage = ({ src }) => (
+  <Card.Img 
+    variant="top" 
+    src={src} 
+    className="my-3"
+  />
+);
+
+const Tags = ({ tags }) => {
+  if (!tags || tags.length === 0) return null;
+
+  // If tags is an array, join it into a string
+  const tagsString = Array.isArray(tags) ? tags.join(',') : tags;
+
+  // Split by comma and trim each tag
+  const tagArray = tagsString.split(',').map(tag => tag.trim());
+
+  return (
+    <div className="mb-2">
+      {tagArray.map((tag, index) => (
+        <span key={index} className="badge bg-secondary me-2">#{tag}</span>
+      ))}
+    </div>
+  );
+};
+const OnlineStatus = ({ type }) => (
+  <div className="mb-2">
+    <span className="text-muted">{type === 'online' ? '온라인' : '오프라인'}</span>
+  </div>
+);
+
+const RecruitmentInfo = ({  nowPeople , recruitPeople }) => (
+  <div>
+    <Users size={18} className="me-1" /> {}
+    {nowPeople}/{recruitPeople}
+  </div>
+);
+
+const ActionButton = ({ state }) => (
+  <Button variant="outline-primary" size="sm">
+    {state ? "참여하기" : "마감됨"}
+  </Button>
+);
 
 const StudyCard = ({ study }) => {
+  const [isLiked, setIsLiked] = useState(false);
+
   return (
-    <Card style={{ width: '18rem', borderRadius: '15px', border: '1px solid lightgray' }}>
+    <Card className="mb-3" style={{ width: '18rem', borderRadius: '15px', border: '1px solid lightgray' }}>
       <Card.Body>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="d-flex justify-content-between align-items-start">
           <Card.Title>{study.title}</Card.Title>
-          <FaHeart style={{ color: 'gray', cursor: 'pointer' }} />
+          <LikeButton isLiked={isLiked} onClick={() => setIsLiked(!isLiked)} />
         </div>
-        <div style={{ height: '100px', backgroundColor: '#f8f9fa', marginBottom: '10px' }}></div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-          <div>{study.hashTags.map(tag => `#${tag} `)}</div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <FaUsers style={{ marginRight: '5px' }} />
-            <span>{study.currentMembers}/{study.maxMembers}</span>
-          </div>
-          <Button variant="outline-secondary" size="sm">Join</Button>
+        <StudyImage src={study.studyImageUrl} />
+        <Tags tags={[study.topic, study.difficulty]} />
+        <OnlineStatus type={study.type} />
+        <div className="d-flex justify-content-between align-items-center">
+          <RecruitmentInfo nowPeople = {study.nowPeople} recruitPeople={study.recruitPeople} />
+          <ActionButton state={study.state} />
         </div>
       </Card.Body>
     </Card>

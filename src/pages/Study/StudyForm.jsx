@@ -118,7 +118,7 @@ const StudyForm = () => {
 
     const formData = {
       studyInfo: {
-        studyImage: imageUrl,
+        studyImageUrl: imageUrl,
         title,
         type,
         recruitPeople: parseInt(memberCount, 10),
@@ -134,6 +134,8 @@ const StudyForm = () => {
         time: '',
       },
     };
+    
+    console.log('Form data:', formData);
 
     const token = localStorage.getItem('accessToken');
     console.log('Token:', token);

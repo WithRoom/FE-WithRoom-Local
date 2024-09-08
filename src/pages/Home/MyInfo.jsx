@@ -1,23 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Nav, Button, Card } from 'react-bootstrap';
 import axios from 'axios';
+import StudyCard from '../Study/StudyCard';
 
 const StudyList = ({ studies }) => (
-   <Row>
+    <Row>
     {studies.map((study) => (
       <Col key={study.studyId} md={4} className="mb-3">
-        <Card>
-          <Card.Img variant="top" src={study.studyImageUrl} alt={study.title} />
-          <Card.Body>
-            <Card.Title>{study.title}</Card.Title>
-            <Card.Text>
-              주제: {study.topic}<br />
-              난이도: {study.difficulty}<br />
-              모집 인원: {study.recruitPeople}
-            </Card.Text>
-            <Button variant="primary">상세 보기</Button>
-          </Card.Body>
-        </Card>
+        <StudyCard study={study} /> {}
       </Col>
     ))}
   </Row>
