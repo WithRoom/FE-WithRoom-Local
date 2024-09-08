@@ -4,8 +4,11 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const StudyForm = () => {
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState('');
   const [type, setType] = useState('');
   const [memberCount, setMemberCount] = useState('');
@@ -145,11 +148,9 @@ const StudyForm = () => {
       console.log(response);
       Swal.fire({
         icon: 'success',
-        title: 'Study created successfully',
+        title: '스터디 생성 완료!',
       });
-
-      // 홈으로
-      window.location.href = '/home';
+      navigate('/home');
     })
     .catch((error) => {
       console.error("Error during form submission:", error);

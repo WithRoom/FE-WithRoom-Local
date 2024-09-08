@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import ProfileCard from "../components/ProfileCard";
+import MyInfo from "./MyInfo"; // Import the MyInfo component
 import { Container, Row, Col } from "react-bootstrap";
 import '../css/ProfileCard.css';
 
@@ -39,6 +40,11 @@ const Me = () => {
       <Row className="justify-content-center mt-4">
         <Col md={6}>
           <ProfileCard {...userProfile} />
+        </Col>
+      </Row>
+      <Row className="justify-content-center mt-4">
+        <Col md={12}>
+          <MyInfo /> 
         </Col>
       </Row>
     </Container>
