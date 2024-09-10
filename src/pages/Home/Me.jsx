@@ -36,7 +36,7 @@ const Me = () => {
 
   return (
     <Container>
-      <Header />
+      
       <Row className="justify-content-center mt-4">
         <Col md={6}>
           <ProfileCard {...userProfile} />
