@@ -11,8 +11,8 @@ import Me from './pages/Home/Me';
 
 const App = () => {
   return (
-    <div className='App'>
-      <BrowserRouter>
+    <div className='App' style={{ backgroundColor: 'white' }}>      
+     <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<Home />} />
