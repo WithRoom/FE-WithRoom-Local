@@ -39,13 +39,12 @@
   font-family: 'Arial Black', sans-serif;
   font-size: 36px;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: -1px;
   text-align: left;
 }
 
 .subtitle {
   font-family: 'Apple SD Gothic Neo', sans-serif;
-  padding: 1vh;
   font-size: 14px;
   color: #888;
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Navbar, FormControl, Button, Container, Row, Col } from 'react-bootstrap';
-import kakaoimg from '../../images/kakao.png';
+import kakaoimg from '../../images/kakao_login_medium_narrow.png';
 import meImg from '../../images/me.png';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -101,11 +101,6 @@ const Header = () => {
                 스터디
               </Button>
             </Link>
-            <Link to="/login" className="nav-link me-3" style={{ display: 'inline-block' }}>
-              <Button variant="outline-primary" style={{ backgroundColor: 'white', borderColor: 'yellow' }}>
-                <img src={kakaoimg} alt="Login" style={{ width: '30px', height: '30px' }} />
-              </Button>
-            </Link>
             <Link to="/me" className="nav-link me-3" style={{ display: 'inline-block' }}>
               <Button variant="outline-primary" style={{ backgroundColor: 'white' }}>
                 <img src={meImg} alt="me" style={{ width: '30px', height: '30px' }} />
@@ -123,9 +118,11 @@ const Header = () => {
          <CarouselFadeExample/>
         </div>
       <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center p-4">
-        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full mb-4" >
-          공부하러가기
+      <Link to="/login" >
+        <button className="px-4 py-2 rounded-full mb-4" >
+          <img src={kakaoimg} alt="kakao" style={{ width: 'auto', height: 'auto' }} />
         </button>
+      </Link> 
       </div>
     </div>
     </Container>
