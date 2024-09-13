@@ -9,7 +9,9 @@ function CarouselFadeExample() {
   return (
     <Carousel fade>
       <Carousel.Item>
-        <ImageImport src={test} alt="인프런" />
+         <a href="https://www.notion.so/Study-With-Me-7ffb049d2bba4814a4da7dc010d8216e">
+            <ImageImport src={test} alt="인프런" />
+          </a>
         <Carousel.Caption>
           <h3>Welcome</h3>
         </Carousel.Caption>

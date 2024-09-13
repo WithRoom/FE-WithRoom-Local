@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Nav, Button, Card } from 'react-bootstrap';
 import axios from 'axios';
 import StudyCard from '../Study/StudyCard';
+import Header from '../components/Header';
 
 const StudyList = ({ studies }) => (
     <Row>

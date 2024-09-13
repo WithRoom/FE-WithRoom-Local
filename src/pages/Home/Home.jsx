@@ -6,6 +6,7 @@ import MainContent from '../Home/MainContent';
 import '../css/Home.css';
 import axios from 'axios';
 import StudyCard from '../Study/StudyCard';
+import Footer from '../components/Footer';
 
 const Home = () => {
   const [nickName, setNickName] = useState(null);
@@ -13,13 +14,16 @@ const Home = () => {
   const [studies, setStudies] = useState([]);
 
   const homeStudyList = ({ studies }) => (
-    <Row>
-      {studies.map((study) => (
-        <Col key={study.studyId} md={4} className="mb-3">
-          <StudyCard study={study} />
-        </Col>
-      ))}
-    </Row>
+    <Container>
+      <Row>
+        {studies.map((study) => (
+          <Col key={study.studyId} md={4} className="mb-3">
+            <StudyCard study={study} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
+
   );
 
   const checkAuth = async () => {
@@ -53,9 +57,11 @@ const Home = () => {
 
   const fetchStudies = async () => {
     try {
-      const response = await axios.get('/study/home/studylist');
+      const response = await axios.get('/home/info', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
       console.log('studies', response.data);
-      setStudies(response.data);
+      setStudies(response.data.homeStudyInfoList);
     } catch (error) {
       console.error('스터디 목록 가져오기 중 오류 발생:', error);
     }
@@ -95,19 +101,7 @@ const Home = () => {
         </Container>
         {homeStudyList({ studies })}
       </Container>
-      <footer className="footer bg-light py-3 mt-auto">
-        <Container>
-          <Row>
-            <Col md={6} className="text-center text-md-start">
-              <p className="mb-0">&copy; 2024 Study With Me. All rights reserved.</p>
-            </Col>
-            <Col md={6} className="text-center text-md-end mt-3 mt-md-0">
-              <a href="/contact" className="me-3">Contact Us</a>
-              <a href="/privacy">Privacy Policy</a>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
+      <Footer/>
     </>
   );
 };

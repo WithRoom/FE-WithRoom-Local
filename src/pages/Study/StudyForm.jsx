@@ -5,6 +5,8 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const StudyForm = () => {
   const navigate = useNavigate();
@@ -166,6 +168,7 @@ const StudyForm = () => {
 
   return (
     <Container>
+      <Header />
       <Form onSubmit={createRegisterForm}>
         <Row className="mb-4">
           <Col md={6}>
@@ -343,7 +346,9 @@ const StudyForm = () => {
           />
         </Form.Group>
       </Form>
+      <Footer/>
     </Container>
+    
   );
 }
 
