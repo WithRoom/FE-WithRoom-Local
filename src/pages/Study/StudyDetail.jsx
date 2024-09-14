@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { StudyContext } from './StudyContext';
 
 const StudyDetail = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const studyId = queryParams.get('studyId');
+  // const { studyId } = useContext(StudyContext);
+
+  const studyId = 1; // 테스트를 위한 설정
 
   const [studyDetail, setStudyDetail] = useState(null);
   const [studyGroupLeader, setStudyGroupLeader] = useState(null);
@@ -14,14 +14,14 @@ const StudyDetail = () => {
   useEffect(() => {
     const fetchStudyDetail = async () => {
       if (!studyId) {
-        console.error('No studyId found in query parameters');
+        console.error('No studyId found in context');
         return;
       }
 
       try {
         console.log(`Fetching study details for studyId: ${studyId}`);
         const response = await axios.get(`/study/info/detail`, {
-          params: { studyId },
+          data: { studyId },
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const { studyDetail, studyGroupLeader, studyScheduleDetail } = response.data;

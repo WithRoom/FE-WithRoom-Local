@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, Users } from 'lucide-react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { StudyContext } from './StudyContext';
 
 const LikeButton = ({ isLiked, onClick, studyId }) => {
   const handleLikeClick = () => {
@@ -112,9 +113,16 @@ const ActionButton = ({ state, studyId }) => {
 
 const StudyCard = ({ study }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const { setStudyId } = useContext(StudyContext);
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    setStudyId(study.studyId);
+    navigate('/study/info/detail');
+  };
 
   return (
-    <Link to={`/study/info/detail?studyId=${study.studyId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+    <div onClick={handleCardClick} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
       <Card className="mb-3" style={{ width: '18rem', borderRadius: '15px', border: '1px solid lightgray' }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
@@ -130,7 +138,7 @@ const StudyCard = ({ study }) => {
           </div>
         </Card.Body>
       </Card>
-    </Link>
+    </div>
   );
 };
 
