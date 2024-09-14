@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
 const StudyForm = () => {
   const navigate = useNavigate();
@@ -188,7 +189,6 @@ const StudyForm = () => {
                 </Button>
               </div>
             </div>
-            <Button variant="primary" onClick={uploadImageToS3} className="mt-2">이미지 업로드</Button>
           </Col>
           <Col md={6}>
             <div className="text-end mt-4">
@@ -237,53 +237,64 @@ const StudyForm = () => {
                 onChange={(e) => setMemberCount(e.target.value)}
               />
             </Form.Group>
+            
+            <Button variant="primary" onClick={uploadImageToS3} className="mt-2">
+             <DriveFolderUploadIcon />
+            </Button>
           </Col>
         </Row>
-        <h4>상세 일정</h4>
-        <Form.Group className="mb-3">
-          <Form.Label>스터디 요일<span className="text-danger">*</span></Form.Label>
-          <div>
-            {daysOfWeek.map((day) => (
-              <Form.Check
-                key={day}
-                inline
-                type="checkbox"
-                label={day}
-                id={`day-${day}`}
-                checked={days.includes(day)}
-                onChange={() => {
-                  if (days.includes(day)) {
-                    setDays(days.filter(d => d !== day));
-                  } else {
-                    setDays([...days, day]);
-                  }
-                }}
-              />
-            ))}
-          </div>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>스터디 시작일<span className="text-danger">*</span></Form.Label>
-          <Form.Control 
-            type="date" 
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>스터디 기간<span className="text-danger">*</span></Form.Label>
-          <Form.Select 
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          >
-            <option>선택해주세요</option>
-            <option value="1">1주</option>
-            <option value="2">2주</option>
-            <option value="4">1개월</option>
-            <option value="12">3개월</option>
-            <option value="24">6개월</option>
-          </Form.Select>
-        </Form.Group>
+        <Row>
+          <Col>
+              <Form.Group className="mb-3">
+                <Form.Label>스터디 요일<span className="text-danger">*</span></Form.Label>
+                <div>
+                  {daysOfWeek.map((day) => (
+                    <Form.Check
+                      key={day}
+                      inline
+                      type="checkbox"
+                      label={day}
+                      id={`day-${day}`}
+                      checked={days.includes(day)}
+                      onChange={() => {
+                        if (days.includes(day)) {
+                          setDays(days.filter(d => d !== day));
+                        } else {
+                          setDays([...days, day]);
+                        }
+                      }}
+                    />
+                  ))}
+                </div>
+              </Form.Group>
+          </Col>
+          <Col>
+              <Form.Group className="mb-3">
+                <Form.Label>스터디 시작일<span className="text-danger">*</span></Form.Label>
+                <Form.Control 
+                  type="date" 
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group className="mb-3">
+              <Form.Label>스터디 기간<span className="text-danger">*</span></Form.Label>
+                <Form.Select 
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                >
+                  <option>선택해주세요</option>
+                  <option value="1">1주</option>
+                  <option value="2">2주</option>
+                  <option value="4">1개월</option>
+                  <option value="12">3개월</option>
+                  <option value="24">6개월</option>
+                </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Form.Group className="mb-4">
           <Form.Label>스터디 소개<span className="text-danger">*</span></Form.Label>
@@ -297,7 +308,6 @@ const StudyForm = () => {
           </Form.Text>
         </Form.Group>
 
-        <h4>스터디 태그 설정</h4>
         <Form.Group className="mb-4">
           <Form.Label>스터디 주제<span className="text-danger">*</span></Form.Label>
           <div>
@@ -344,6 +354,7 @@ const StudyForm = () => {
             onChange={(e) => setSearchTags(e.target.value)}
             maxLength={20}
           />
+          <Form.Text className="text-start d-block">검색으로 노출시킬 수 있는 태그를 입력해주세요!</Form.Text>
         </Form.Group>
       </Form>
       <Footer/>

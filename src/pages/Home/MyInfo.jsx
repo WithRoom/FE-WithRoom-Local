@@ -30,9 +30,9 @@ const MyInfo = () => {
           case 'participating':
             endpoint = '/study/mypage/info/part';
             break;
-        //   case 'completed':
-        //     endpoint = '/api/studies/completed';
-        //     break;
+          case 'request-join':
+            endpoint = '/study/maypage/info/request-join';
+            break;
           case 'liked':
             endpoint = '/study/mypage/info/interest';
             break;
@@ -71,8 +71,8 @@ const MyInfo = () => {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link active={activeTab === 'completed'} onClick={() => setActiveTab('completed')}>
-            완료한 스터디
+          <Nav.Link active={activeTab === 'request-join'} onClick={() => setActiveTab('request-join')}>
+            참여 신청 온 스터디
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -109,9 +109,8 @@ const MyInfo = () => {
         </>
       )}
       
-      {activeTab === 'completed' && (
+      {activeTab === 'request-join' && (
         <>
-          <h2>완료한 스터디</h2>
           {studies.length > 0 ? (
             <StudyList studies={studies} />
           ) : (

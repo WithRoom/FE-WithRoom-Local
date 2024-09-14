@@ -8,6 +8,7 @@ import Register from './pages/Register/Register';
 import NotFound from './pages/common/NotFound';
 import PrivateRoute from './pages/common/PrivateRoute';
 import Me from './pages/Home/Me';
+import StudyDetail from './pages/Study/StudyDetail';
 
 const App = () => {
   return (
@@ -21,7 +22,7 @@ const App = () => {
           <Route exact path='/kakao/callback' element={<Redirection />} />
           <Route path="/register" element={<Register />} />
           <Route path="/me" element={<PrivateRoute element={Me}/>} />
-
+          <Route path="/study/info/detail" element={<StudyDetail />} />
           <Route path="*" element={<NotFound to="/404" />} />
         </Routes>
       </BrowserRouter>

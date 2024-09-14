@@ -14,6 +14,7 @@ const Home = () => {
   const [studies, setStudies] = useState([]);
 
   const homeStudyList = ({ studies }) => (
+    console.log('studies', studies),
     <Container>
       <Row>
         {studies.map((study) => (
