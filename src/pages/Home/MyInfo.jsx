@@ -6,15 +6,14 @@ import Header from '../components/Header';
 
 const StudyList = ({ studies }) => (
     <Row>
-    {studies.map((study) => (
-      <Col key={study.studyId} md={4} className="mb-3">
-        <StudyCard study={study} /> {}
-      </Col>
-    ))}
+      {studies.map((study) => (
+        <Col key={study.studyId} md={4} className="mb-3">
+          <StudyCard study={study} /> {}
+        </Col>
+      ))}
   </Row>
 );
 
-// 메인 컴포넌트
 const MyInfo = () => {
   const [activeTab, setActiveTab] = useState('created');
   const [studies, setStudies] = useState([]);
@@ -31,7 +30,7 @@ const MyInfo = () => {
             endpoint = '/study/mypage/info/part';
             break;
           case 'request-join':
-            endpoint = '/study/maypage/info/request-join';
+            endpoint = '/study/mypage/info/request-join';
             break;
           case 'liked':
             endpoint = '/study/mypage/info/interest';
@@ -45,10 +44,20 @@ const MyInfo = () => {
         const response = await axios.get(endpoint,
             { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
         );
-
+        console.log('endpoint : ', endpoint);
         console.log('스터디 목록을 불러왔습니다:', response.data);
 
-        setStudies(response.data.studies || response.data.groupLeaderStudies || []);
+        if(endpoint === '/study/mypage/info/mystudy') {
+          setStudies(response.data.groupLeaderStudies);
+        }else if(endpoint === '/study/mypage/info/part') {
+          setStudies(response.data.participationStudies);
+        }else if(endpoint === '/study/mypage/info/request-join') {
+          setStudies(response.data.responseSignUpStudies);
+        }else if(endpoint === '/study/mypage/info/interest') {
+          setStudies(response.data.interestStudies);
+        }else if(endpoint === '/study/mypage/info/join') {
+          setStudies(response.data.signUpStudies);
+        }
       } catch (error) {
         console.error('스터디 목록을 불러오는데 실패했습니다:', error);
       }

@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import { StudyContext } from './StudyContext';
 
 const LikeButton = ({ isLiked, onClick, studyId }) => {
+  console.log(isLiked, onClick, studyId);
+
   const handleLikeClick = () => {
     axios.post('/study/interest', { studyId }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
@@ -122,14 +124,15 @@ const StudyCard = ({ study }) => {
   };
 
   return (
-    <div onClick={handleCardClick} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
       <Card className="mb-3" style={{ width: '18rem', borderRadius: '15px', border: '1px solid lightgray' }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
             <Card.Title>{study.title}</Card.Title>
-            <LikeButton isLiked={isLiked} onClick={() => setIsLiked(!isLiked)} studyId={study.studyId} />
+            <LikeButton isLiked={study.interest} onClick={() => setIsLiked(!isLiked)} studyId={study.studyId} />
           </div>
-          <StudyImage src={study.studyImageUrl} />
+          <div onClick={handleCardClick} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
+              <StudyImage src={study.studyImageUrl} />
+          </div>
           <Tags tags={[study.topic, study.difficulty]} />
           <OnlineStatus type={study.type} />
           <div className="d-flex justify-content-between align-items-center">
@@ -138,7 +141,7 @@ const StudyCard = ({ study }) => {
           </div>
         </Card.Body>
       </Card>
-    </div>
+
   );
 };
 

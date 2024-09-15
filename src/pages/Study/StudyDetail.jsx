@@ -3,9 +3,7 @@ import axios from 'axios';
 import { StudyContext } from './StudyContext';
 
 const StudyDetail = () => {
-  // const { studyId } = useContext(StudyContext);
-
-  const studyId = 1; // 테스트를 위한 설정
+  const { studyId } = useContext(StudyContext);
 
   const [studyDetail, setStudyDetail] = useState(null);
   const [studyGroupLeader, setStudyGroupLeader] = useState(null);
@@ -20,8 +18,7 @@ const StudyDetail = () => {
 
       try {
         console.log(`Fetching study details for studyId: ${studyId}`);
-        const response = await axios.get(`/study/info/detail`, {
-          data: { studyId },
+        const response = await axios.post(`/study/info/detail`, { studyId }, {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
         const { studyDetail, studyGroupLeader, studyScheduleDetail } = response.data;
