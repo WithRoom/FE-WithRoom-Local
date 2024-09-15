@@ -89,12 +89,20 @@ const ActionButton = ({ state, studyId }) => {
       });
       console.log('Join response:', response.data);
 
-      Swal.fire({
-        icon: 'success',
-        title: '스터디 신청 완료',
-        showConfirmButton: false,
-        timer: 1500
-      })
+      if (response.data.includes('그룹장')) {
+        Swal.fire({
+          icon: 'error',
+          title: '스터디 신청 실패',
+          text: '그룹장은 스터디에 참여할 수 없습니다.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: '스터디 신청 완료',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
 
     } catch (error) {
       console.error('Error joining study:', error);
