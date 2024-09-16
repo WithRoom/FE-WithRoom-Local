@@ -66,6 +66,12 @@ const Tags = ({ tags }) => {
   );
 };
 
+const Difficulty = ({ difficulty }) => (
+  <div className="mb-2">
+    <span className="badge bg-info">{difficulty}</span>
+  </div>
+);
+
 const OnlineStatus = ({ type }) => (
   <div className="mb-2">
     <span className="text-muted">{type === 'online' ? '온라인' : '오프라인'}</span>
@@ -141,7 +147,8 @@ const StudyCard = ({ study }) => {
           <div onClick={handleCardClick} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
               <StudyImage src={study.studyImageUrl} />
           </div>
-          <Tags tags={[study.topic, study.difficulty]} />
+          <Tags tags={study.topic} />
+          <Difficulty difficulty={study.difficulty} />
           <OnlineStatus type={study.type} />
           <div className="d-flex justify-content-between align-items-center">
             <RecruitmentInfo nowPeople={study.nowPeople} recruitPeople={study.recruitPeople} />

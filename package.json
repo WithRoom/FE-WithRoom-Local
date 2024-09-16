@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
     "@shadcn/ui": "^0.0.4",
     "@testing-library/jest-dom": "^5.17.0",
@@ -20,7 +21,7 @@
     "react-icons": "^5.3.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.26.1",
-    "shadcn-ui": "^0.9.0",
+    "shadcn-ui": "^0.9.1",
     "survey-react-ui": "^1.11.13",
     "sweetalert2": "^11.13.2",
     "web-vitals": "^2.1.4"
@@ -58,6 +59,6 @@
     "eslint-plugin-flowtype": "^8.0.3",
     "postcss": "^8.4.41",
     "react-scripts": "^5.0.1",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.11"
   }
 }
