@@ -3,6 +3,26 @@ import Header from '../components/Header';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import Select from 'react-select';
+
+const regionOptions = [
+  { value: 'Seoul', label: '서울특별시' },
+  { value: 'Busan', label: '부산광역시' },
+  { value: 'Incheon', label: '인천광역시' },
+  { value: 'Daegu', label: '대구광역시' },
+  { value: 'Daejeon', label: '대전광역시' },
+  { value: 'Gwangju', label: '광주광역시' },
+  { value: 'Ulsan', label: '울산광역시' },
+  { value: 'Gyeonggi', label: '경기도' },
+  { value: 'Gangwon', label: '강원도' },
+  { value: 'Chungbuk', label: '충청북도' },
+  { value: 'Chungnam', label: '충청남도' },
+  { value: 'Jeonbuk', label: '전라북도' },
+  { value: 'Jeonnam', label: '전라남도' },
+  { value: 'Gyeongbuk', label: '경상북도' },
+  { value: 'Gyeongnam', label: '경상남도' },
+  { value: 'Jeju', label: '제주특별자치도' }
+];
 
 const Register = () => {
   const [registerForm, setRegisterForm] = useState({
@@ -19,9 +39,16 @@ const Register = () => {
     });
   };
 
+  const handleAreaChange = (selectedOptions) => {
+    setRegisterForm({
+      ...registerForm,
+      preferredArea: selectedOptions.map(option => option.value).join(', ')
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('accessToken'); 
+    const token = localStorage.getItem('accessToken');
 
     if (!token) {
       Swal.fire({
@@ -50,11 +77,12 @@ const Register = () => {
           </Form.Group>
           <Form.Group controlId="formPreferredArea">
             <Form.Label>Preferred Area:</Form.Label>
-            <Form.Control
-              type="text"
-              name="preferredArea"
-              value={registerForm.preferredArea}
-              onChange={handleChange}
+            <Select
+              isMulti
+              options={regionOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={handleAreaChange}
             />
           </Form.Group>
           <Form.Group controlId="formInterest">
