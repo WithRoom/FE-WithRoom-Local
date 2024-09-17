@@ -86,8 +86,10 @@ const Header = () => {
     <Container className="header-container">
       <Row>
         <Col md={4} className="title-section">
-          <h1 className="main-title">WITH ROOM</h1>
-          <p className="subtitle">스터디하는 공간, 우리가 만들다</p>
+          <Link to="/home" className="nav-link me-3" style={{ display: 'inline-block' }}>
+            <h1 className="main-title">WITH ROOM</h1>
+            <p className="subtitle">스터디하는 공간, 우리가 만들다</p>
+          </Link>
         </Col>
         <Col md={4} className="search-section">
           <div className="search-bar-container">
