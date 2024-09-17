@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar, FormControl, Button, Container, Row, Col } from 'react-bootstrap';
 import kakaoimg from '../../images/kakao_login_medium_narrow.png';
@@ -12,22 +12,35 @@ import '../css/Header.css';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   // 로그인 여부 확인 함수
-  const isLogin = () => {
+  const checkAuth = async () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      Swal.fire({
-        icon: 'error',
-        title: '로그인이 필요합니다.',
-        text: '로그인 페이지로 이동합니다.',
-      });
-      navigate('/login');
-      return false;
+      setIsAuthenticated(false);
+      return;
     }
-    return true;
+
+    try {
+      const response = await axios.get('/oauth/login/state', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data.state === false) {
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      setIsAuthenticated(false);
+    }
   };
 
   // 검색 기능
@@ -69,8 +82,10 @@ const Header = () => {
           showConfirmButton: false,
           timer: 1500
         });
-        navigate('/home'); // 홈 페이지로 이동
-        window.location.reload(); // 페이지 새로고침
+        setTimeout(() => {
+          navigate('/home'); // 홈 페이지로 이동
+          window.location.reload(); // 페이지 새로고침
+        }, 1500);
       })
       .catch((error) => {
         console.error("Error during logout:", error);
@@ -127,7 +142,7 @@ const Header = () => {
           <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center p-4">
             <div>
               <h3 className="text-2xl font-bold">WITH ROOM</h3>
-              {isLogin() && (
+              {isAuthenticated && (
                 <Link to="/study" className="nav-link me-3" style={{ display: 'inline-block' }}>
                   <p className="text-gray-500">스터디 만들러 가볼까요?</p>
                 </Link>
@@ -138,11 +153,13 @@ const Header = () => {
                 <img src={meImg} alt="me" style={{ width: '200px', height: '200px' }} />
               </Link>
             </div>
-            <Link to="/login">
-              <button className="px-4 py-2 rounded-full mb-4">
-                <img src={kakaoimg} alt="kakao" style={{ width: 'auto', height: 'auto' }} />
-              </button>
-            </Link>
+            {!isAuthenticated && (
+              <Link to="/login">
+                <button className="px-4 py-2 rounded-full mb-4">
+                  <img src={kakaoimg} alt="kakao" style={{ width: 'auto', height: 'auto' }} />
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       )}

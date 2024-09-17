@@ -7,6 +7,7 @@ import '../css/Home.css';
 import axios from 'axios';
 import StudyCard from '../Study/StudyCard';
 import Footer from '../components/Footer';
+import { Button } from 'react-bootstrap';
 
 const Home = () => {
   const [nickName, setNickName] = useState(null);
@@ -14,17 +15,24 @@ const Home = () => {
   const [studies, setStudies] = useState([]);
 
   const homeStudyList = ({ studies }) => (
-    console.log('studies', studies),
-    <Container>
-      <Row>
-        {studies.map((study) => (
-          <Col key={study.studyId} md={4} className="mb-3">
-            <StudyCard study={study} />
-          </Col>
-        ))}
-      </Row>
-    </Container>
-
+    <>
+      <Container>
+        <Row>
+          {studies.slice(0, 6).map((study) => (
+            <Col key={study.studyId} md={4} className="mb-3">
+              <StudyCard study={study} />
+            </Col>
+          ))}
+        </Row>
+        {studies.length > 5 && (
+          <div className="d-flex justify-content-center mt-3">
+            <Button variant="primary">
+              더보기
+            </Button>
+          </div>
+        )}
+      </Container>
+    </>
   );
 
   const checkAuth = async () => {

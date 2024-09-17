@@ -22,6 +22,8 @@ const LikeButton = ({ isLiked, onClick, studyId }) => {
           timer: 1500
         });
         onClick();
+
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error during interest request:", error);
@@ -49,6 +51,7 @@ const StudyImage = ({ src }) => (
     variant="top"
     src={src}
     className="my-3"
+    style={{ width: '100%', height: 'auto' }} // Adjust the width and height as needed
   />
 );
 
