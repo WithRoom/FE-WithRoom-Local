@@ -82,9 +82,15 @@ const OnlineStatus = ({ type }) => (
 );
 
 const RecruitmentInfo = ({ nowPeople, recruitPeople }) => (
+  // nowPeople === recruitPeople ? '마감됨' : `${nowPeople}/${recruitPeople}`
+
   <div>
     <Users size={18} className="me-1" />
-    {nowPeople}/{recruitPeople}
+    {nowPeople === recruitPeople ? (
+      <span className="badge bg-danger">마감됨</span>
+    ) : (
+      `${nowPeople}/${recruitPeople}`
+    )}
   </div>
 );
 

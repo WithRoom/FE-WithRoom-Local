@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Header from '../components/Header';
-import CarouselFadeExample from '../components/CarouselFadeExample'; // CarouselFadeExample 컴포넌트 임포트
+import CarouselFadeExample from '../components/CarouselFadeExample'; 
 import MainContent from '../Home/MainContent';
 import '../css/Home.css';
 import axios from 'axios';
 import StudyCard from '../Study/StudyCard';
 import Footer from '../components/Footer';
-import { Button } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
+import more from '../../images/more.png';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [nickName, setNickName] = useState(null);
@@ -17,21 +19,23 @@ const Home = () => {
   const homeStudyList = ({ studies }) => (
     <>
       <Container>
-        <Row>
-          {studies.slice(0, 6).map((study) => (
-            <Col key={study.studyId} md={4} className="mb-3">
-              <StudyCard study={study} />
-            </Col>
-          ))}
-        </Row>
+  <Row>
+    {studies.slice(0, 5).map((study) => (
+      <Col key={study.studyId} md={4} className="mb-3">
+        <StudyCard study={study} />
+      </Col>
+    ))}
+    <Col>
+      <Link to="/study/list">
         {studies.length > 5 && (
-          <div className="d-flex justify-content-center mt-3">
-            <Button variant="primary">
-              더보기
-            </Button>
+          <div className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
+              <img src={more} alt="next" className="w-20"/>
           </div>
         )}
-      </Container>
+      </Link>
+    </Col>
+  </Row>
+</Container>
     </>
   );
 

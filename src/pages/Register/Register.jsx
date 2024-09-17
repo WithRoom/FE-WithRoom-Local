@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Form, Button, Alert } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 import axios from 'axios';
 import SelectComponent from './SelectComponent';
 import SelectInterestComponent from './SelectInterestComponent';
@@ -82,6 +83,12 @@ const Register = () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
       setError('로그인이 필요합니다.');
+
+      Swal.Alert({
+        icon : 'error',
+        title : '로그인이 필요합니다.'
+      })
+
       setLoading(false);
       return;
     }

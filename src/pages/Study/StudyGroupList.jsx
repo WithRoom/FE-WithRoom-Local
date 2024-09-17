@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import StudyGroupCard from './StudyGroupCard';
 import Header from '../components/Header';
 import StudyForm from './StudyForm';
 import MainContent from '../Home/MainContent';
