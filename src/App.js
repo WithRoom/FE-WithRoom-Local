@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { StudyProvider } from './pages/Study/StudyContext';
 import SocialKakao from './pages/Home/SocialKakao';
@@ -12,6 +12,30 @@ import Me from './pages/Home/Me';
 import StudyDetail from './pages/Study/StudyDetail';
 
 const App = () => {
+  useEffect(() => {
+    const clearLocalStorageOnClose = (event) => {
+      // 새로고침인지 확인 (sessionStorage에 값을 넣고 확인)
+      sessionStorage.setItem('isReload', 'true');
+    };
+
+    const onBeforeUnload = (event) => {
+      const isReload = sessionStorage.getItem('isReload');
+      if (!isReload) {
+        // 새로고침이 아닌 경우 (즉, 브라우저를 완전히 닫는 경우) localStorage를 초기화
+        localStorage.clear();
+      }
+    };
+
+    // 새로고침을 감지하기 위해 sessionStorage를 사용
+    window.addEventListener('beforeunload', onBeforeUnload);
+    window.addEventListener('unload', clearLocalStorageOnClose);
+
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+      window.removeEventListener('unload', clearLocalStorageOnClose);
+    };
+  }, []);
+
   return (
     <StudyProvider>
       <div className='App' style={{ backgroundColor: 'white' }}>
