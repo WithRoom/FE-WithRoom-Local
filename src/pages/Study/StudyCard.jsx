@@ -51,7 +51,7 @@ const StudyImage = ({ src }) => (
     variant="top"
     src={src}
     className="my-3"
-    style={{ width: '100%', height: 'auto' }} // Adjust the width and height as needed
+    style={{ width: '100%', height: 'auto' }} 
   />
 );
 
