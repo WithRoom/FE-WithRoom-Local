@@ -14,14 +14,16 @@ const StudySchedule = ({ studyScheduleDetail }) => {
       {/* Card Content */}
       <Card.Body className="p-4">
         <div className="d-flex justify-content-between mb-4">
-          {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
-            <div
-              key={index}
-              className={`w-8 h-8 d-flex align-items-center justify-content-center rounded-circle ${index === 0 ? 'bg-primary text-white' : ''}`}
-            >
-              {day}
-            </div>
-          ))}
+            {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
+              <div
+                key={index}
+                className={`w-8 h-8 d-flex align-items-center justify-content-center 
+                  ${studyScheduleDetail.weekDay.includes(day) 
+                  ? 'rounded-circle bg-primary text-white' : ''}`}
+              >
+                {day}
+              </div>
+            ))}
         </div>
         <div className="space-y-2">
           <div className="d-flex justify-content-between">

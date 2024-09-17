@@ -66,7 +66,9 @@ const Register = () => {
   };
 
   const handleInterestChange = (value) => {
+    console.log('value:', value); // Debugging
     setRegisterForm(prevForm => ({
+    
       ...prevForm,
       interest: value
     }));
@@ -139,9 +141,10 @@ const Register = () => {
             </Form.Group>
 
             <Form.Group className="mb-6" controlId="formInterest">
-              <Form.Label className="block text-gray-700 text-sm font-bold mb-2">관심사</Form.Label>
-              <SelectInterestComponent onChange={handleInterestChange} />
+                <Form.Label className="block text-gray-700 text-sm font-bold mb-2">관심사</Form.Label>
+                <SelectInterestComponent onChange={handleInterestChange} />  {/* 관심사 선택 컴포넌트 */}
             </Form.Group>
+
 
             <Button 
               variant="primary" 

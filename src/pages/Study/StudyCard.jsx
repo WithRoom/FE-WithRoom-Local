@@ -127,6 +127,44 @@ const ActionButton = ({ state, studyId }) => {
   );
 };
 
+const AcceptButton = ({ state, studyId, memberId }) => {
+  if (!memberId) {
+    return null;
+  }
+  const studyAcceptJoin = async () => {
+    try {
+      const response = await axios.post('/study/response-join', {state, studyId, memberId},
+        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+      console.log('accept response:', response.data); 
+
+      Swal.fire({
+        icon: 'success',
+        title: '스터디 수락하기 완료',
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+      window.location.reload("/");
+      
+
+    } catch (error) {
+      console.error('Error joining study:', error);
+    }
+  };
+
+  return (
+    <Button
+      variant="outline-primary"
+      size="sm"
+      onClick={state ? studyAcceptJoin : null}
+      disabled={!state}
+    >
+      {state ? "수락하기" : "거절하기"}
+    </Button>
+  );
+};
+
 const StudyCard = ({ study }) => {
   const [isLiked, setIsLiked] = useState(false);
   const { setStudyId } = useContext(StudyContext);
@@ -153,6 +191,7 @@ const StudyCard = ({ study }) => {
           <div className="d-flex justify-content-between align-items-center">
             <RecruitmentInfo nowPeople={study.nowPeople} recruitPeople={study.recruitPeople} />
             <ActionButton state={study.state} studyId={study.studyId} />
+            <AcceptButton state={study.state} studyId={study.studyId} memberId={study.memberId} />
           </div>
         </Card.Body>
       </Card>

@@ -16,15 +16,15 @@ const Redirection = () => {
             if (result.data.firstJoin === true) { 
                 Swal.fire({
                     icon: 'success',
-                    title: 'Welcome!',
-                    text: 'You have successfully logged in for the first time.',
+                    title: '어서오세요!',
+                    text: '로그인에 성공하였습니다. 회원가입을 완료해주세요.',
                 });
                 navigate('/register');
             } else {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Welcome back!',
-                    text: 'You have successfully logged in.',
+                    title: '환영합니다!',
+                    text: '로그인에 성공하였습니다. 스터디 찾으러 떠나볼까요?',
                 });
                 navigate('/home');
             }
@@ -34,8 +34,8 @@ const Redirection = () => {
             console.error("Error during login:", error);
             Swal.fire({
                 icon: 'error',
-                title: 'Login Failed',
-                text: 'There was an error during login. Please try again.',
+                title: '로그인에 실패하였습니다.',
+                text: '다시 시도해주세요!',
             });
         });
     }, [code, navigate]);
