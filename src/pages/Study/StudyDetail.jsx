@@ -9,6 +9,39 @@ import Footer from '../components/Footer';
 import StudySchedule from './StudySchedule';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import styled from 'styled-components';
+
+const CommentForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+`;
+
+const CommentInput = styled.textarea`
+  width: 100%;
+  min-height: 100px;
+  padding: 15px;
+  border: none;
+  resize: vertical;
+  font-size: 14px;
+  &::placeholder {
+    color: #bbb;
+  }
+`;
+
+const SubmitButton = styled(Button)`
+  align-self: flex-end;
+  margin: 10px;
+`;
+
+const CommentCount = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
 
 const StudyDetail = () => {
   const { studyId } = useContext(StudyContext);
@@ -28,16 +61,15 @@ const StudyDetail = () => {
 
       try {
         console.log(`Fetching study details for studyId: ${studyId}`);
-        const response = await axios.post(`/study/info/detail`, { studyId }, {
+        const response = await axios.post('/study/info/detail', { studyId }, {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
-        console.log('Response data:', response.data);
-        const { studyDetail, studyGroupLeader, studyScheduleDetail, studyCommentList } = response.data;
-        setStudyDetail(studyDetail);
-        setStudyGroupLeader(studyGroupLeader);
-        setStudyScheduleDetail(studyScheduleDetail);
-        setStudyCommentList(studyCommentList);
-        console.log('Study studyCommentList:', studyCommentList);
+        console.log('Response data:', response);
+        setStudyDetail(response.data.studyDetail);
+        setStudyGroupLeader(response.data.studyGroupLeader);
+        setStudyScheduleDetail(response.data.studyScheduleDetail);
+        setStudyCommentList(response.data.studyCommentList);
+        console.log('Study studyCommentList:', response.data.studyCommentList);
       } catch (error) {
         console.error('Error fetching study detail:', error);
         Swal.fire({
@@ -60,22 +92,28 @@ const StudyDetail = () => {
       });
       return;
     }
-
+  
     try {
-      const response = await axios.post('/comment/create', {
+      const createResponse = await axios.post('/comment/create', {
         studyId,
-        memberId: localStorage.getItem('memberId'), // Assuming memberId is stored in localStorage
         content: newComment,
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-
-      setStudyCommentList([...studyCommentList, response.data]);
-      setNewComment('');
+  
+  
       Swal.fire({
         icon: 'success',
         title: '댓글이 추가되었습니다.',
       });
+  
+      const detailResponse = await axios.post('/study/info/detail', { studyId }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+  
+      setStudyCommentList(detailResponse.data.studyCommentList);
+  
+      setNewComment('');
     } catch (error) {
       console.error('Error creating comment:', error);
       Swal.fire({
@@ -149,39 +187,30 @@ const StudyDetail = () => {
               </Card>
             </Col>
           </Row>
-          <Card className="mt-4 shadow-sm">
-            <Card.Body>
-              <Card.Title>댓글</Card.Title>
-              <ListGroup variant="flush">
-                {studyCommentList.map((comment, index) => (
-                  <ListGroupItem key={index}>
-                    <div className="d-flex align-items-center">
-                      <img src={comment.profileImage} alt={comment.nickName} className="rounded-circle" style={{ width: '40px', height: '40px', marginRight: '10px' }} />
-                      <div>
-                        <strong>{comment.nickName}</strong>
-                        <p>{comment.content}</p>
-                      </div>
-                    </div>
-                  </ListGroupItem>
-                ))}
-              </ListGroup>
-              <Form onSubmit={handleCommentSubmit} className="mt-3">
-                <Form.Group controlId="newComment">
-                  <Form.Label>새 댓글</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="댓글을 입력하세요..."
-                  />
-                </Form.Group>
-                <Button variant="primary" type="submit" className="mt-2">
-                  댓글 추가
-                </Button>
-              </Form>
-            </Card.Body>
-          </Card>
+          <Card.Body>
+            <CommentCount>댓글 {studyCommentList.length}</CommentCount>
+            <ListGroup variant="flush">
+              {studyCommentList.map((comment, index) => (
+                <ListGroup.Item key={index} className="py-3">
+                  <Row className="align-items-center">
+                    <Col xs={10} md={11}>
+                      <div>[{comment.nickName}][{comment.content}]</div>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+            <CommentForm onSubmit={handleCommentSubmit}>
+              <CommentInput
+                placeholder="댓글을 입력하세요."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <SubmitButton variant="primary" type="submit">
+                댓글 등록
+              </SubmitButton>
+            </CommentForm>
+          </Card.Body>
         </Col>
         <Col md={4}>
           <StudySchedule studyScheduleDetail={studyScheduleDetail} />

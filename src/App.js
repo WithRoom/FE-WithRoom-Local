@@ -14,6 +14,10 @@ import StudyList from './pages/Study/StudyList';
 
 const App = () => {
   useEffect(() => {
+    if(localStorage.getItem('accessToken')) {
+      localStorage.clear();
+    }
+
     const clearLocalStorageOnClose = (event) => {
       // 새로고침인지 확인 (sessionStorage에 값을 넣고 확인)
       sessionStorage.setItem('isReload', 'true');

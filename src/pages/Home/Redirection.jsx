@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS import
 
 const Redirection = () => {
     const code = new URLSearchParams(window.location.search).get('code');
@@ -40,7 +41,13 @@ const Redirection = () => {
         });
     }, [code, navigate]);
 
-    return <div>로그인 중입니다.</div>;
+    return (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">로그인 중...</span>
+            </div>
+        </div>
+    );
 };
 
 export default Redirection;
