@@ -5,13 +5,11 @@ import { Card, Button } from 'react-bootstrap';
 const StudySchedule = ({ studyScheduleDetail }) => {
   return (
     <Card className="w-64 bg-gray-100 shadow-md">
-      {/* Card Header */}
       <Card.Header className="bg-gray-200 py-2 d-flex align-items-center">
         <Calendar className="mr-2" size={20} />
         <h2 className="text-lg font-semibold mb-0">스터디 일정</h2>
       </Card.Header>
 
-      {/* Card Content */}
       <Card.Body className="p-4">
         <div className="d-flex justify-content-between mb-4">
             {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
@@ -40,20 +38,6 @@ const StudySchedule = ({ studyScheduleDetail }) => {
           </div>
         </div>
       </Card.Body>
-
-      {/* Card Footer */}
-      <Card.Footer className="d-flex flex-column space-y-2">
-        <Button className="w-100 bg-gray-300 text-gray-700 hover:bg-gray-400">참여하기</Button>
-        <div className="d-flex justify-content-between w-100">
-          <Button variant="outline-secondary" className="flex-1 mr-1">
-            <Share2 size={16} className="mr-1" />
-            공유하기
-          </Button>
-          <Button variant="outline-secondary" className="flex-1 ml-1">
-            <Heart size={16} className="mr-1" />
-          </Button>
-        </div>
-      </Card.Footer>
     </Card>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Users } from 'lucide-react';
+import { Heart, Users, XCircle } from 'lucide-react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { StudyContext } from './StudyContext';
@@ -82,8 +82,6 @@ const OnlineStatus = ({ type }) => (
 );
 
 const RecruitmentInfo = ({ nowPeople, recruitPeople }) => (
-  // nowPeople === recruitPeople ? '마감됨' : `${nowPeople}/${recruitPeople}`
-
   <div>
     <Users size={18} className="me-1" />
     {nowPeople === recruitPeople ? (
@@ -156,7 +154,6 @@ const AcceptButton = ({ state, studyId, memberId }) => {
 
       window.location.reload("/");
       
-
     } catch (error) {
       console.error('Error joining study:', error);
     }
@@ -184,15 +181,18 @@ const StudyCard = ({ study }) => {
     navigate('/study/info/detail');
   };
 
+  const isClosed = study.nowPeople === study.recruitPeople;
+
   return (
-      <Card className="mb-3" style={{ width: '18rem', borderRadius: '15px', border: '1px solid lightgray' }}>
+    <div style={{ position: 'relative', width: '18rem' }}>
+      <Card className="mb-3" style={{ width: '100%', borderRadius: '15px', border: '1px solid lightgray' }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
             <Card.Title>{study.title}</Card.Title>
             <LikeButton isLiked={study.interest} onClick={() => setIsLiked(!isLiked)} studyId={study.studyId} />
           </div>
           <div onClick={handleCardClick} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
-              <StudyImage src={study.studyImageUrl} />
+            <StudyImage src={study.studyImageUrl} />
           </div>
           <Tags tags={study.topic} />
           <Difficulty difficulty={study.difficulty} />
@@ -204,7 +204,26 @@ const StudyCard = ({ study }) => {
           </div>
         </Card.Body>
       </Card>
-
+      {isClosed && (
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '15px',
+            zIndex: 10
+          }}
+        >
+          <XCircle size={64} color="white" />
+        </div>
+      )}
+    </div>
   );
 };
 
