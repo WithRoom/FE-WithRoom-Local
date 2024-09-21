@@ -174,18 +174,6 @@ const StudyDetail = () => {
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={6}>
-              <Card className="mt-4 shadow-sm">
-                <Card.Body>
-                  <Card.Title>스터디 일정</Card.Title>
-                  <Card.Text><strong>시작일</strong> {studyScheduleDetail.startDay}</Card.Text>
-                  <Card.Text><strong>스터디 요일</strong> {studyScheduleDetail.weekDay}</Card.Text>
-                  <Card.Text><strong>스터디 시간대</strong> {studyScheduleDetail.time}</Card.Text>
-                  <Card.Text><strong>현재 인원</strong> {studyScheduleDetail.nowPeople}/{studyScheduleDetail.recruitPeople}</Card.Text>
-                  <Card.Text><strong>진행 상태</strong> {studyScheduleDetail.state ? 'Ongoing' : 'Completed'}</Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
           </Row>
           <Card.Body>
             <CommentCount>댓글 {studyCommentList.length}</CommentCount>
@@ -210,6 +198,7 @@ const StudyDetail = () => {
                 댓글 등록
               </SubmitButton>
             </CommentForm>
+
           </Card.Body>
         </Col>
         <Col md={4}>
