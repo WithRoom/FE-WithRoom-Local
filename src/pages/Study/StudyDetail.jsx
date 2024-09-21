@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col, Card, ListGroup, ListGroupItem, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
+import { FaBook, FaTrophy, FaTags } from 'react-icons/fa'; // 아이콘 불러오기
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import DOMPurify from 'dompurify';
@@ -11,6 +12,34 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import styled from 'styled-components';
 
+const Title = styled.h1`
+  font-weight: bold;
+  text-align: center;
+  font-size: 24px;
+  font-family: 'Arial', sans-serif;
+  margin-bottom: 20px;
+`;
+
+const Content = styled.div`
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+  line-height: 1.6;
+`;
+
+const IconText = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const Icon = styled.span`
+  margin-right: 10px;
+`;
+
+// 오류가 발생한 부분에 필요한 스타일 컴포넌트 정의 추가
 const CommentForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -60,16 +89,13 @@ const StudyDetail = () => {
       }
 
       try {
-        console.log(`Fetching study details for studyId: ${studyId}`);
         const response = await axios.post('/study/info/detail', { studyId }, {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         });
-        console.log('Response data:', response);
         setStudyDetail(response.data.studyDetail);
         setStudyGroupLeader(response.data.studyGroupLeader);
         setStudyScheduleDetail(response.data.studyScheduleDetail);
         setStudyCommentList(response.data.studyCommentList);
-        console.log('Study studyCommentList:', response.data.studyCommentList);
       } catch (error) {
         console.error('Error fetching study detail:', error);
         Swal.fire({
@@ -94,13 +120,12 @@ const StudyDetail = () => {
     }
   
     try {
-      const createResponse = await axios.post('/comment/create', {
+      await axios.post('/comment/create', {
         studyId,
         content: newComment,
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-  
   
       Swal.fire({
         icon: 'success',
@@ -112,7 +137,6 @@ const StudyDetail = () => {
       });
   
       setStudyCommentList(detailResponse.data.studyCommentList);
-  
       setNewComment('');
     } catch (error) {
       console.error('Error creating comment:', error);
@@ -148,29 +172,37 @@ const StudyDetail = () => {
     <Container>
       <Header />
       <Row className="my-4">
-        <Col md={1}>
+        <Col md={3}>
           <Card className="mt-4 shadow-sm">
             <Card.Img variant="top" src={studyDetail.studyImageUrl} alt={studyDetail.title} style={{ width: '100%', height: 'auto' }} />
           </Card>
         </Col>
-        <Col md={7}>
+        <Col md={6}>
           <Card className="mt-4 shadow-sm">
             <Card.Body>
-              <Card.Title>{studyDetail.title}</Card.Title>
-              <Card.Text dangerouslySetInnerHTML={{ __html: sanitizedIntroduction }} />
-              <Card.Text><strong>주제</strong> {studyDetail.topic}</Card.Text>
-              <Card.Text><strong>난이도</strong> {studyDetail.difficulty}</Card.Text>
-              <Card.Text><strong>태그</strong> {studyDetail.tag}</Card.Text>
-              <Card.Text><strong>상태</strong> {studyDetail.state ? 'Active' : 'Inactive'}</Card.Text>
+              <Title>{studyDetail.title}</Title>
+              <Content dangerouslySetInnerHTML={{ __html: sanitizedIntroduction }} />
+              <IconText>
+                <Icon><FaBook /></Icon>
+                <span><strong>주제:</strong> {studyDetail.topic}</span>
+              </IconText>
+              <IconText>
+                <Icon><FaTrophy /></Icon>
+                <span><strong>난이도:</strong> {studyDetail.difficulty}</span>
+              </IconText>
+              <IconText>
+                <Icon><FaTags /></Icon>
+                <span><strong>태그:</strong> {studyDetail.tag}</span>
+              </IconText>
             </Card.Body>
           </Card>
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <Card className="mt-4 shadow-sm">
                 <Card.Body>
                   <Card.Title>그룹장 정보</Card.Title>
-                  <Card.Text><strong>이름</strong> {studyGroupLeader.name}</Card.Text>
-                  <Card.Text><strong>선호 지역</strong> {studyGroupLeader.preferredArea}</Card.Text>
+                  <Card.Text><strong>이름:</strong> {studyGroupLeader.name}</Card.Text>
+                  <Card.Text><strong>선호 지역:</strong> {studyGroupLeader.preferredArea}</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -182,7 +214,7 @@ const StudyDetail = () => {
                 <ListGroup.Item key={index} className="py-3">
                   <Row className="align-items-center">
                     <Col xs={10} md={11}>
-                      <div>[{comment.nickName}][{comment.content}]</div>
+                      <div>[{comment.nickName}] {comment.content}</div>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -198,11 +230,10 @@ const StudyDetail = () => {
                 댓글 등록
               </SubmitButton>
             </CommentForm>
-
           </Card.Body>
         </Col>
-        <Col md={4}>
-          <StudySchedule studyScheduleDetail={studyScheduleDetail} />
+        <Col md={3} className="mb-3">
+             <StudySchedule studyScheduleDetail={studyScheduleDetail} />
         </Col>
       </Row>
       <Footer />

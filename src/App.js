@@ -12,6 +12,7 @@ import Me from './pages/Home/Me';
 import StudyDetail from './pages/Study/StudyDetail';
 import StudyList from './pages/Study/StudyList';
 
+
 const App = () => {
   useEffect(() => {
     if(localStorage.getItem('accessToken')) {

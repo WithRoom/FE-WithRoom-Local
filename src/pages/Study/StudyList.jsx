@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Pagination } from 'react-bootstrap';
+import { Card, Container, Row, Col, Pagination } from 'react-bootstrap';
 import axios from 'axios';
 import StudyCard from './StudyCard';
 import Header from '../components/Header';
+import StudySearchFilter from './StudySearchFilter';
 
 const StudyList = () => {
   const [allStudies, setAllStudies] = useState([]);
@@ -36,6 +37,9 @@ const StudyList = () => {
   return (
     <Container>
       <Header />
+      <Card>
+         <StudySearchFilter />
+      </Card>
       <Row xs={1} md={2} lg={4} className="mt-4 g-4">
         {currentStudies.map((study) => (
           <Col key={study.studyId}>

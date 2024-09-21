@@ -103,7 +103,7 @@ const Home = () => {
           <Row className="justify-content-center mb-4">
             {isAuthenticated ? (
               <Col>
-                <h2>{nickName}</h2>
+                {/* <h2>{nickName}</h2> */}
               </Col>
             ) : (
               <Col>
