@@ -40,7 +40,7 @@ const StudyList = () => {
       <Card>
          <StudySearchFilter />
       </Card>
-      <Row xs={1} md={2} lg={4} className="mt-4 g-4">
+      <Row xs={1} md={2} lg={4} className="mt-3 g-3">
         {currentStudies.map((study) => (
           <Col key={study.studyId}>
             <StudyCard study={study} />

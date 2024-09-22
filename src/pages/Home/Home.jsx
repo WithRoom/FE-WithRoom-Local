@@ -20,14 +20,14 @@ const Home = () => {
     <>
       <Container>
   <Row>
-    {studies.slice(0, 5).map((study) => (
-      <Col key={study.studyId} md={4} className="mb-3">
+    {studies.slice(0, 7).map((study) => (
+      <Col key={study.studyId} md={3} className="mb-3">
         <StudyCard study={study} />
       </Col>
     ))}
     <Col>
       <Link to="/study/list">
-        {studies.length > 5 && (
+        {studies.length > 6 && (
           <div className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
               <img src={more} alt="next" className="w-20"/>
           </div>
