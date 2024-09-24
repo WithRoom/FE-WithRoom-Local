@@ -7,6 +7,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import CarouselFadeExample from './CarouselFadeExample';
 import logoutImg from '../../images/logout.png';
+import SwiperComponent from './SwiperComponent';
 
 import '../css/Header.css';
 
@@ -135,8 +136,8 @@ const Header = () => {
       {/* 홈 페이지에서만 CarouselFadeExample 컴포넌트를 표시 */}
       {location.pathname === '/home' && (
         <div className="flex w-full h-auto bg-gray-100 p-4">
-          <div className="flex-1 bg-white rounded-xm shadow-md mr-4">
-            <CarouselFadeExample />
+          <div>
+            <SwiperComponent />
           </div>
 
           <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center p-4">
