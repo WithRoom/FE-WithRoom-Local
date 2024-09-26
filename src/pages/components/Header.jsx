@@ -136,11 +136,21 @@ const Header = () => {
       {/* 홈 페이지에서만 CarouselFadeExample 컴포넌트를 표시 */}
       {location.pathname === '/home' && (
         <div className="flex w-full h-auto bg-gray-100 p-4">
-          <div>
-            <SwiperComponent />
+         <div className="flex-1 bg-white rounded-xm shadow-md mr-4">
+            <CarouselFadeExample />
           </div>
 
           <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center p-4">
+            <div>
+            <a href="http://pf.kakao.com/_xdxbzIn" target="_blank" rel="noopener noreferrer" className="block p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
+                <h6 className="text-2xl font-bold text-center">
+                  서비스 이용 전 <br />
+                  카카오 채널 추가 <br />
+                  반드시 해주세요!
+                </h6>
+              </a>
+              
+            </div>
             <div>
               <h3 className="text-2xl font-bold">WITH ROOM</h3>
               {isAuthenticated && (

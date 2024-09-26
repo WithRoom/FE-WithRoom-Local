@@ -12,12 +12,9 @@ function CarouselFadeExample() {
          <a href="https://www.notion.so/Study-With-Me-7ffb049d2bba4814a4da7dc010d8216e">
             <ImageImport src={home} alt="인프런" />
           </a>
-        <Carousel.Caption>
-          <h3>Welcome</h3>
-        </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
-         <ImageImport src={study} alt="스터디" />
+          <ImageImport src={home} alt="인프런" />
       <Carousel.Caption>
         </Carousel.Caption>
       </Carousel.Item>
