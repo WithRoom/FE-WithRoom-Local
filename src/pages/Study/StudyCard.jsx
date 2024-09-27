@@ -100,9 +100,8 @@ const ActionButton = ({ state, studyId }) => {
       const response = await axios.post('/study/join', { studyId },
         { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      console.log('Join response:', response.data);
 
-      if (response.data.includes('그룹장')) {
+      if (response.data === false) {
         Swal.fire({
           icon: 'error',
           title: '스터디 신청 실패',

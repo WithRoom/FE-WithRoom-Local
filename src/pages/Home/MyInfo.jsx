@@ -98,8 +98,7 @@ const MyInfo = () => {
       
       {activeTab === 'created' && (
         <>
-          <h2>내가 만든 스터디</h2>
-          {studies.length > 0 ? (
+            {studies.length > 0 ? (
             <StudyList studies={studies} />
           ) : (
             <p>생성한 스터디가 없습니다.</p>
@@ -109,8 +108,7 @@ const MyInfo = () => {
       
       {activeTab === 'participating' && (
         <>
-          <h2>참여 중 스터디</h2>
-          {studies.length > 0 ? (
+           {studies.length > 0 ? (
             <StudyList studies={studies} />
           ) : (
             <p>참여 중인 스터디가 없습니다.</p>
@@ -130,7 +128,6 @@ const MyInfo = () => {
       
       {activeTab === 'liked' && (
         <>
-          <h2>관심 스터디</h2>
           {studies.length > 0 ? (
             <StudyList studies={studies} />
           ) : (
@@ -141,7 +138,6 @@ const MyInfo = () => {
 
       {activeTab === 'join' && (
         <>
-          <h2>참여 신청 한 스터디</h2>
           {studies.length > 0 ? (
             <StudyList studies={studies} />
           ) : (

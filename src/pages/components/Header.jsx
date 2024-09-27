@@ -135,15 +135,15 @@ const Header = () => {
 
       {/* 홈 페이지에서만 CarouselFadeExample 컴포넌트를 표시 */}
       {location.pathname === '/home' && (
-        <div className="flex w-full h-auto bg-gray-100 p-4">
+        <div className="flex w-full h-auto bg-gray-100 p-3">
          <div className="flex-1 bg-white rounded-xm shadow-md mr-4">
             <CarouselFadeExample />
           </div>
 
-          <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center p-4">
+          <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center">
             <div>
             <div className="bg-yellow-300 p-4 text-center">
-                <h2 className="text-xl font-bold mb-4">
+                <h2 className="text-xl font-bold mb-4 ">
                   서비스 이용 전 반드시 채널 추가 후 이용해주세요!
                 </h2>
                 <a 
@@ -153,7 +153,7 @@ const Header = () => {
                   className="block bg-white rounded-lg p-4 hover:bg-gray-100 transition"
                 >
                   <div className="flex items-center">
-                    <div className="bg-black text-white rounded-full w-100 h-8 flex items-center justify-center mr-2">
+                    <div className="bg-black text-white rounded-full w-100 h-8 flex items-center justify-center mr-1">
                       WithRoom 카카오 채널 이동하기
                     </div>
                   </div>
@@ -175,7 +175,7 @@ const Header = () => {
             </div>
             {!isAuthenticated && (
               <Link to="/login">
-                <button className="px-4 py-2 rounded-full mb-4">
+                <button className="px-4 py-2 rounded-full mb-2">
                   <img src={kakaoimg} alt="kakao" style={{ width: 'auto', height: 'auto' }} />
                 </button>
               </Link>
