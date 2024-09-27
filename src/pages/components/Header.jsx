@@ -142,17 +142,26 @@ const Header = () => {
 
           <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center p-4">
             <div>
-            <a href="http://pf.kakao.com/_xdxbzIn" target="_blank" rel="noopener noreferrer" className="block p-4 bg-gray-100 rounded-lg hover:bg-gray-200 transition">
-                <h6 className="text-2xl font-bold text-center">
-                  서비스 이용 전 <br />
-                  카카오 채널 추가 <br />
-                  반드시 해주세요!
-                </h6>
-              </a>
+            <div className="bg-yellow-300 p-4 text-center">
+                <h2 className="text-xl font-bold mb-4">
+                  서비스 이용 전 반드시 채널 추가 후 이용해주세요!
+                </h2>
+                <a 
+                  href="http://pf.kakao.com/_xdxbzIn" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="block bg-white rounded-lg p-4 hover:bg-gray-100 transition"
+                >
+                  <div className="flex items-center">
+                    <div className="bg-black text-white rounded-full w-100 h-8 flex items-center justify-center mr-2">
+                      WithRoom 카카오 채널 이동하기
+                    </div>
+                  </div>
+                </a>
+              </div>
               
             </div>
             <div>
-              <h3 className="text-2xl font-bold">WITH ROOM</h3>
               {isAuthenticated && (
                 <Link to="/study" className="nav-link me-3" style={{ display: 'inline-block' }}>
                   <p className="text-gray-500">스터디 만들러 가볼까요?</p>
