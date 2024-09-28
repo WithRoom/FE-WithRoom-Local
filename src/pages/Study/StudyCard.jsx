@@ -6,8 +6,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { StudyContext } from './StudyContext';
 
-const LikeButton = ({ isLiked, onClick, studyId }) => {
-  console.log(isLiked, onClick, studyId);
+const LikeButton = ({ isLiked, setIsLiked, studyId }) => {
+  console.log(isLiked, setIsLiked, studyId);
 
   const handleLikeClick = () => {
     axios.post('/study/interest', { studyId }, {
@@ -15,15 +15,25 @@ const LikeButton = ({ isLiked, onClick, studyId }) => {
     })
       .then((response) => {
         console.log(response);
-        Swal.fire({
-          icon: 'success',
-          title: '관심 등록되었습니다.',
-          showConfirmButton: false,
-          timer: 1500
-        });
-        onClick();
-
-        window.location.reload();
+        if (response.data === true) {
+          if(isLiked === true){
+            Swal.fire({
+              icon: 'success',
+              title: '관심이 취소되었습니다.',
+              showConfirmButton: false,
+              timer: 1500
+            });
+            setIsLiked(false);
+          }else{
+            Swal.fire({
+              icon: 'success',
+              title: '관심이 등록되었습니다.',
+              showConfirmButton: true,
+              timer: 1500
+            });
+            setIsLiked(true);
+          }
+        } 
       })
       .catch((error) => {
         console.error("Error during interest request:", error);
@@ -171,7 +181,7 @@ const AcceptButton = ({ state, studyId, memberId }) => {
 };
 
 const StudyCard = ({ study }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(study.interest);
   const { setStudyId } = useContext(StudyContext);
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
@@ -180,8 +190,6 @@ const StudyCard = ({ study }) => {
     setStudyId(study.studyId);
     navigate('/study/info/detail');
   };
-  
-  console.log(study)
 
   const isClosed = study.nowPeople === study.recruitPeople;
 
@@ -195,7 +203,7 @@ const StudyCard = ({ study }) => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">
             <Card.Title>{study.title}</Card.Title>
-            <LikeButton isLiked={study.interest} onClick={() => setIsLiked(!isLiked)} studyId={study.studyId} />
+            <LikeButton isLiked={isLiked} setIsLiked={setIsLiked} studyId={study.studyId} />
           </div>
           <div onClick={handleCardClick} style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
             <StudyImage src={study.studyImageUrl} />

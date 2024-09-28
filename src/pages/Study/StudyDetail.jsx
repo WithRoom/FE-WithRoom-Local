@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
-import { FaBook, FaTrophy, FaTags } from 'react-icons/fa'; // 아이콘 불러오기
+import { FaBook, FaTrophy, FaTags, FaPaperPlane } from 'react-icons/fa'; // Import the icon
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import DOMPurify from 'dompurify';
@@ -39,12 +39,10 @@ const Icon = styled.span`
   margin-right: 10px;
 `;
 
-// 오류가 발생한 부분에 필요한 스타일 컴포넌트 정의 추가
 const CommentForm = styled.form`
   display: flex;
   flex-direction: column;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: none;
   overflow: hidden;
   margin-top: 20px;
 `;
@@ -53,7 +51,6 @@ const CommentInput = styled.textarea`
   width: 100%;
   min-height: 100px;
   padding: 15px;
-  border: none;
   resize: vertical;
   font-size: 14px;
   &::placeholder {
@@ -62,8 +59,32 @@ const CommentInput = styled.textarea`
 `;
 
 const SubmitButton = styled(Button)`
+  size: 8px;
   align-self: flex-end;
-  margin: 10px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 12px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  background-color: #000000;
+  color: #ffffff;
+  border: 2px solid transparent;
+  
+  &:hover {
+    background-color: #black;
+    transform: scale(1.05);
+    color: #black;
+    font-size: 12px;
+    border-radius: 25px;
+    border: 2px solid #black;
+
+  }
+  
+  svg {
+    margin-left: 8px;
+  }
 `;
 
 const CommentCount = styled.div`
@@ -97,7 +118,6 @@ const StudyDetail = () => {
         setStudyGroupLeader(response.data.studyGroupLeader);
         setStudyScheduleDetail(response.data.studyScheduleDetail);
         setStudyCommentList(response.data.studyCommentList);
-        setIsFinished(response.data.studyDetail.finish);
       } catch (error) {
         console.error('Error fetching study detail:', error);
         Swal.fire({
@@ -252,16 +272,23 @@ const StudyDetail = () => {
                 </ListGroup.Item>
               ))}
             </ListGroup>
-            <CommentForm onSubmit={handleCommentSubmit}>
-              <CommentInput
-                placeholder="댓글을 입력하세요."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <SubmitButton variant="primary" type="submit">
-                댓글 등록
-              </SubmitButton>
-            </CommentForm>
+            <CommentForm onSubmit={handleCommentSubmit} className="d-flex flex-column">
+                  <CommentInput
+                    placeholder="댓글을 입력하세요."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="form-control mb-3" // adds some margin-bottom for spacing
+                  />
+                  
+                  <div className="d-flex justify-content-end">
+                    <SubmitButton variant="" type="submit" className="d-flex align-items-center no-border">
+                      <span>댓글 등록</span>
+                      <FaPaperPlane className="ml-2" />
+                    </SubmitButton>
+                  </div>
+          </CommentForm>
+
+          
           </Card.Body>
         </Col>
         <Col md={3} className="mb-3">

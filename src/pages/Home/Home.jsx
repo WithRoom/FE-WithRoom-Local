@@ -10,6 +10,8 @@ import Footer from '../components/Footer';
 import { Card, Button } from 'react-bootstrap';
 import more from '../../images/more.png';
 import { Link } from 'react-router-dom';
+import { ChevronRight } from 'lucide-react';
+
 
 const Home = () => {
   const [nickName, setNickName] = useState(null);
@@ -28,9 +30,12 @@ const Home = () => {
     <Col>
       <Link to="/study/list">
         {studies.length > 6 && (
-          <div className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
-              <img src={more} alt="next" className="w-20"/>
-          </div>
+          <div className="bg-white rounded-lg p-4 flex flex-col items-center justify-center h-full cursor-pointer border:1px">
+          <ChevronRight className="w-12 h-12 text-blue-500 mb-3" />
+          <p className="text-lg font-bold text-center text-gray-800">
+            스터디를 더 보러 가볼까요?
+          </p>
+        </div>
         )}
       </Link>
     </Col>
