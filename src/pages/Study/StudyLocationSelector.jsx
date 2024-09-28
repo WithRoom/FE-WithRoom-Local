@@ -54,7 +54,7 @@ const StudyLocationSelector = () => {
   return (
     <div>
       <label>
-        대분류:
+        행정 구역:
         <select
           value={selectedLargeClassification}
           onChange={(e) => setSelectedLargeClassification(e.target.value)}

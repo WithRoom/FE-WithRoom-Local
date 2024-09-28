@@ -174,16 +174,23 @@ const StudyCard = ({ study }) => {
   const [isLiked, setIsLiked] = useState(false);
   const { setStudyId } = useContext(StudyContext);
   const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleCardClick = () => {
     setStudyId(study.studyId);
     navigate('/study/info/detail');
   };
+  
+  console.log(study)
 
   const isClosed = study.nowPeople === study.recruitPeople;
 
   return (
-    <div style={{ position: 'relative', width: '18rem' }}>
+    <div 
+      style={{ position: 'relative', width: '18rem', transition: 'transform 0.2s', transform: isHovered ? 'scale(1.05)' : 'scale(1)' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Card className="mb-3" style={{ width: '100%', borderRadius: '15px', border: '1px solid lightgray' }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-start">

@@ -80,6 +80,7 @@ const StudyDetail = () => {
   const [studyScheduleDetail, setStudyScheduleDetail] = useState(null);
   const [studyCommentList, setStudyCommentList] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
     const fetchStudyDetail = async () => {
@@ -96,6 +97,7 @@ const StudyDetail = () => {
         setStudyGroupLeader(response.data.studyGroupLeader);
         setStudyScheduleDetail(response.data.studyScheduleDetail);
         setStudyCommentList(response.data.studyCommentList);
+        setIsFinished(response.data.studyDetail.finish);
       } catch (error) {
         console.error('Error fetching study detail:', error);
         Swal.fire({
@@ -143,6 +145,36 @@ const StudyDetail = () => {
       Swal.fire({
         icon: 'error',
         title: '댓글 추가에 실패했습니다.',
+        text: error.message,
+      });
+    }
+  };
+
+  const handleFinishStudy = async () => {
+    try {
+      const response = await axios.post('/study/finish', { studyId }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+
+      if (response.data === true) {
+        Swal.fire({
+          icon: 'success',
+          title: '스터디를 마감합니다.',
+          showConfirmButton: true,
+        });
+        setIsFinished(true);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: '그룹장만 스터디를 마감할 수 있습니다.',
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      console.error('Error finishing study:', error);
+      Swal.fire({
+        icon: 'error',
+        title: '스터디 마감에 실패했습니다.',
         text: error.message,
       });
     }
@@ -233,7 +265,16 @@ const StudyDetail = () => {
           </Card.Body>
         </Col>
         <Col md={3} className="mb-3">
-             <StudySchedule studyScheduleDetail={studyScheduleDetail} />
+          <StudySchedule studyScheduleDetail={studyScheduleDetail} />
+          {isFinished ? (
+            <div className="mt-3 text-center text-danger">
+              마감된 스터디
+            </div>
+          ) : (
+            <Button variant="danger" className="mt-3" onClick={handleFinishStudy}>
+              스터디 마감
+            </Button>
+          )}
         </Col>
       </Row>
       <Footer />

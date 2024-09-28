@@ -1,8 +1,20 @@
-import React from 'react';
-import { Calendar, Heart, Share2 } from 'lucide-react';
-import { Card, Button } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Calendar } from 'lucide-react';
+import { Card } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const StudySchedule = ({ studyScheduleDetail }) => {
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split('T')[0];
+    if (currentDate > studyScheduleDetail.endDay) {
+      Swal.fire({
+        icon: 'warning',
+        title: '마감된 스터디입니다',
+        showConfirmButton: true,
+      });
+    }
+  }, [studyScheduleDetail.endDay]);
+
   return (
     <Card className="w-64 bg-gray-100 shadow-md">
       <Card.Header className="bg-gray-200 py-2 d-flex align-items-center">
@@ -12,16 +24,16 @@ const StudySchedule = ({ studyScheduleDetail }) => {
 
       <Card.Body className="p-4">
         <div className="d-flex justify-content-between mb-4">
-            {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
-              <div
-                key={index}
-                className={`w-8 h-8 d-flex align-items-center justify-content-center 
-                  ${studyScheduleDetail.weekDay.includes(day) 
-                  ? 'rounded-circle bg-primary text-white' : ''}`}
-              >
-                {day}
-              </div>
-            ))}
+          {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
+            <div
+              key={index}
+              className={`w-8 h-8 d-flex align-items-center justify-content-center 
+                ${studyScheduleDetail.weekDay.includes(day) 
+                ? 'rounded-circle bg-primary text-white' : ''}`}
+            >
+              {day}
+            </div>
+          ))}
         </div>
         <div className="space-y-2">
           <div className="d-flex justify-content-between">
@@ -35,6 +47,10 @@ const StudySchedule = ({ studyScheduleDetail }) => {
           <div className="d-flex justify-content-between">
             <span>모집 인원</span>
             <span>{studyScheduleDetail.nowPeople}/{studyScheduleDetail.recruitPeople}</span>
+          </div>
+          <div className="d-flex justify-content-between">
+            <span>마감일</span>
+            <span>{studyScheduleDetail.endDay}</span>
           </div>
         </div>
       </Card.Body>
