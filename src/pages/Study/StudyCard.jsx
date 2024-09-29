@@ -143,44 +143,68 @@ const ActionButton = ({ state, studyId }) => {
   );
 };
 
-const AcceptButton = ({ state, studyId, memberId }) => {
-  if (!memberId) {
-    return null;
-  }
-  const studyAcceptJoin = async () => {
+const AcceptRejectButtons = ({ studyId, memberId, onAccept, onReject }) => {
+  const handleAccept = async () => {
     try {
-      const response = await axios.post('/study/response-join', {state, studyId, memberId},
+      await axios.post('/study/response-join', { state: true, studyId, memberId },
         { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
-      console.log('accept response:', response.data); 
+
 
       Swal.fire({
         icon: 'success',
-        title: '스터디 수락하기 완료',
+        title: '스터디 참여 요청 수락',
         showConfirmButton: false,
         timer: 1500
       });
+      if (onAccept) onAccept();
 
-      window.location.reload("/");
-      
+      window.location.reload();
     } catch (error) {
-      console.error('Error joining study:', error);
+      console.error('Error accepting study join request:', error);
+      Swal.fire({
+        icon: 'error',
+        title: '스터디 참여 요청 수락 실패',
+        text: '오류가 발생했습니다. 다시 시도해주세요.',
+      });
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await axios.post('/study/response-join', { state: false, studyId, memberId },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+      Swal.fire({
+        icon: 'success',
+        title: '스터디 참여 요청을 거절',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      if (onReject) onReject();
+    } catch (error) {
+      console.error('Error rejecting study join request:', error);
+      Swal.fire({
+        icon: 'error',
+        title: '스터디 참여 요청 거절 실패',
+        text: '오류가 발생했습니다. 다시 시도해주세요.',
+      });
     }
   };
 
   return (
-    <Button
-      variant="outline-primary"
-      size="sm"
-      onClick={state ? studyAcceptJoin : null}
-      disabled={!state}
-    >
-      {state ? "수락하기" : "거절하기"}
-    </Button>
+    <div>
+      <Button variant="success" size="sm" onClick={handleAccept} className="me-2">
+        수락
+      </Button>
+      <Button variant="danger" size="sm" onClick={handleReject}>
+        거절
+      </Button>
+    </div>
   );
 };
 
-const StudyCard = ({ study }) => {
+const StudyCard = ({ study, cardType }) => {
   const [isLiked, setIsLiked] = useState(study.interest);
   const { setStudyId } = useContext(StudyContext);
   const navigate = useNavigate();
@@ -213,8 +237,16 @@ const StudyCard = ({ study }) => {
           <OnlineStatus type={study.type} />
           <div className="d-flex justify-content-between align-items-center">
             <RecruitmentInfo nowPeople={study.nowPeople} recruitPeople={study.recruitPeople} />
-            <ActionButton state={study.state} studyId={study.studyId} />
-            <AcceptButton state={study.state} studyId={study.studyId} memberId={study.memberId} />
+            {cardType === 'request-join' ? (
+              <AcceptRejectButtons 
+                studyId={study.studyId} 
+                memberId={study.memberId}
+                onAccept={() => {/* 수락 후 처리 로직 */}}
+                onReject={() => {/* 거절 후 처리 로직 */}}
+              />
+            ) : (
+              <ActionButton state={study.state} studyId={study.studyId} />
+            )}
           </div>
         </Card.Body>
       </Card>

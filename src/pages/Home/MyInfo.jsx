@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Nav, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Nav, Button, Card, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import StudyCard from '../Study/StudyCard';
 import Header from '../components/Header';
 import { Link } from 'react-router-dom';
-import { FaCubes } from 'react-icons/fa'; // Import the icon
+import { FaCubes } from 'react-icons/fa';
 
 const StudyList = ({ studies }) => (
   <Row>
@@ -16,12 +16,22 @@ const StudyList = ({ studies }) => (
   </Row>
 );
 
+const LoadingSpinner = () => (
+  <div className="text-center">
+    <Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+  </div>
+);
+
 const MyInfo = () => {
   const [activeTab, setActiveTab] = useState('created');
   const [studies, setStudies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchStudies = async () => {
+      setIsLoading(true);
       try {
         let endpoint = '';
         switch (activeTab) {
@@ -62,11 +72,57 @@ const MyInfo = () => {
         }
       } catch (error) {
         console.error('스터디 목록을 불러오는데 실패했습니다:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchStudies();
   }, [activeTab]);
+
+  const renderStudyList = () => {
+    if (isLoading) {
+      return <LoadingSpinner />;
+    }
+
+    if (studies.length === 0) {
+      return (
+        <div className="text-center d-flex flex-column align-items-center">
+          <FaCubes size={200} color="gray" />
+          <p>{getEmptyMessage(activeTab)}</p>
+        </div>
+      );
+    }
+
+    return activeTab === 'request-join' ? (
+      <Row>
+        {studies.map((study) => (
+          <Col key={study.studyId} md={4} className="mb-3">
+            <StudyCard study={study} cardType="request-join" />
+          </Col>
+        ))}
+      </Row>
+    ) : (
+      <StudyList studies={studies} />
+    );
+  };
+
+  const getEmptyMessage = (tab) => {
+    switch (tab) {
+      case 'created':
+        return '생성한 스터디가 없습니다.';
+      case 'participating':
+        return '참여 중인 스터디가 없습니다.';
+      case 'request-join':
+        return '참여 신청 온 스터디가 없습니다.';
+      case 'liked':
+        return '관심 스터디가 없습니다.';
+      case 'join':
+        return '참여 신청한 스터디가 없습니다.';
+      default:
+        return '스터디가 없습니다.';
+    }
+  };
 
   return (
     <Container>
@@ -98,77 +154,13 @@ const MyInfo = () => {
         </Nav.Item>
       </Nav>
 
-      {activeTab === 'created' && (
-        <>
-          {studies.length > 0 ? (
-            <StudyList studies={studies} />
-          ) : (
-            <div className="text-center d-flex flex-column align-items-center">
-              <FaCubes size={200} color="gray" />
-              <p>생성한 스터디가 없습니다.</p>
-            </div>
-          )}
-        </>
-      )}
+      {renderStudyList()}
 
-      {activeTab === 'participating' && (
-        <>
-          {studies.length > 0 ? (
-            <StudyList studies={studies} />
-          ) : (
-            <div className="text-center d-flex flex-column align-items-center">
-              <FaCubes size={200} color="gray" />
-              <p>참여 중인 스터디가 없습니다.</p>
-            </div>
-          )}
-        </>
-      )}
-
-      {activeTab === 'request-join' && (
-        <>
-          {studies.length > 0 ? (
-            <StudyList studies={studies} />
-          ) : (
-            <div className="text-center d-flex flex-column align-items-center">
-              <FaCubes size={200} color="gray" />
-              <p>완료한 스터디가 없습니다.</p>
-            </div>
-          )}
-        </>
-      )}
-
-      {activeTab === 'liked' && (
-        <>
-          {studies.length > 0 ? (
-            <StudyList studies={studies} />
-          ) : (
-            <div className="text-center d-flex flex-column align-items-center">
-              <FaCubes size={200} color="gray" />
-              <p>관심 스터디가 없습니다.</p>
-            </div>
-          )}
-        </>
-      )}
-
-      {activeTab === 'join' && (
-        <>
-          {studies.length > 0 ? (
-            <StudyList studies={studies} />
-          ) : (
-            <div className="text-center d-flex flex-column align-items-center">
-              <FaCubes size={200} color="gray" />
-              <p>참여 신청한 스터디가 없습니다.</p>
-            </div>
-          )}
-        </>
-      )}
-        <div className="text-center d-flex flex-column align-items-center">
-          <Link to="/study">
-            <Button variant="primary" className="mt-4">스터디 만들기</Button>
-          </Link>
-
-        </div>
-
+      <div className="text-center d-flex flex-column align-items-center">
+        <Link to="/study">
+          <Button variant="primary" className="mt-4">스터디 만들기</Button>
+        </Link>
+      </div>
     </Container>
   );
 };

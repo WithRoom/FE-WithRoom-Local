@@ -15,32 +15,28 @@ import StudyList from './pages/Study/StudyList';
 
 const App = () => {
   useEffect(() => {
-    if(localStorage.getItem('accessToken')) {
-      localStorage.clear();
-    }
-
-    const clearLocalStorageOnClose = (event) => {
-      // 새로고침인지 확인 (sessionStorage에 값을 넣고 확인)
-      sessionStorage.setItem('isReload', 'true');
-    };
-
     const onBeforeUnload = (event) => {
       const isReload = sessionStorage.getItem('isReload');
       if (!isReload) {
-        // 새로고침이 아닌 경우 (즉, 브라우저를 완전히 닫는 경우) localStorage를 초기화
+        // 브라우저가 닫힐 때만 localStorage 초기화
         localStorage.clear();
       }
     };
-
-    // 새로고침을 감지하기 위해 sessionStorage를 사용
+  
+    // 새로고침 시 sessionStorage에 값을 설정
+    const clearLocalStorageOnClose = () => {
+      sessionStorage.setItem('isReload', 'true');
+    };
+  
     window.addEventListener('beforeunload', onBeforeUnload);
-    window.addEventListener('unload', clearLocalStorageOnClose);
-
+    window.addEventListener('load', clearLocalStorageOnClose);
+  
     return () => {
       window.removeEventListener('beforeunload', onBeforeUnload);
-      window.removeEventListener('unload', clearLocalStorageOnClose);
+      window.removeEventListener('load', clearLocalStorageOnClose);
     };
   }, []);
+  
 
   return (
     <StudyProvider>

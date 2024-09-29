@@ -140,11 +140,11 @@ const Header = () => {
             <CarouselFadeExample />
           </div>
 
-          <div className="w-1/3 bg-white rounded-lg shadow-md flex flex-col justify-end items-center">
+          <div className="w-1/3 bg-white rounded-lg flex flex-col  items-center">
             <div>
             <div className="bg-yellow-300 p-4 text-center">
                 <h2 className="text-xl font-bold mb-4 ">
-                  서비스 이용 전 반드시 채널 추가 후 이용해주세요!
+                  ※서비스 이용 전 반드시 채널 추가 후 이용해주세요※
                 </h2>
                 <a 
                   href="http://pf.kakao.com/_xdxbzIn" 
@@ -173,7 +173,8 @@ const Header = () => {
                 <img src={meImg} alt="me" style={{ width: '200px', height: '200px' }} />
               </Link>
             </div>
-            {!isAuthenticated && (
+            {!isAuthenticated && 
+              (
               <Link to="/login">
                 <button className="px-4 py-2 rounded-full mb-2">
                   <img src={kakaoimg} alt="kakao" style={{ width: 'auto', height: 'auto' }} />
