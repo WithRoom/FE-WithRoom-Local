@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
+import DatePicker from 'react-datepicker';
 
 const StudyForm = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const StudyForm = () => {
   const [imagePreview, setImagePreview] = useState('');
   const [file, setFile] = useState(null);
   const [time, setTime] = useState(''); // 스터디 시간대 변수 추가
+  const [endDay, setEndDay] = useState(new Date());
 
   const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
   const studyTags = ['개념학습', '응용/실용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'];
@@ -140,6 +142,7 @@ const StudyForm = () => {
         startDay: startDate,
         period: duration,
         time: time, // 스터디 시간대 추가
+        endDay: endDay,
       },
     };
 
@@ -231,6 +234,13 @@ const StudyForm = () => {
                   checked={type === 'online'}
                   onChange={() => setType('online')}
                 />
+                <Form.Label>스터디 마감일 선택<span className="text-danger">*</span></Form.Label>
+                <DatePicker 
+                 dateFormat='yyyy-MM-dd' 
+                 shouldCloseOnSelect 
+                 minDate={new Date()} 
+                  selected={endDay} 
+                  onChange={(date) => setEndDay(date)} />
               </div>
             </Form.Group>
             <Form.Group className="mb-3">

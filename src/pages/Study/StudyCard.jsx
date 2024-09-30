@@ -115,7 +115,7 @@ const ActionButton = ({ state, studyId }) => {
         Swal.fire({
           icon: 'error',
           title: '스터디 신청 실패',
-          text: '그룹장은 스터디에 참여할 수 없습니다.',
+          text: '그룹장이거나 이미 신청한 스터디입니다. 그룹장은 스터디에 참여할 수 없습니다.',
         });
       } else {
         Swal.fire({
