@@ -26,6 +26,11 @@ const StudyList = () => {
     }
   };
 
+  const updateStudies = (filteredStudies) => {
+    setAllStudies(filteredStudies);
+    setCurrentPage(1); // 검색 결과가 업데이트되면 첫 페이지로 이동
+  };
+
   const indexOfLastStudy = currentPage * studiesPerPage;
   const indexOfFirstStudy = indexOfLastStudy - studiesPerPage;
   const currentStudies = allStudies.slice(indexOfFirstStudy, indexOfLastStudy);
@@ -38,30 +43,36 @@ const StudyList = () => {
     <Container>
       <Header />
       <Card>
-         <StudySearchFilter />
+         <StudySearchFilter updateStudies={updateStudies} />
       </Card>
-      <Row xs={1} md={2} lg={4} className="mt-3 g-3">
-        {currentStudies.map((study) => (
-          <Col key={study.studyId}>
-            <StudyCard study={study} />
+      <Row xs={1} md={2} lg={4} className="mt-4 g-4">
+        {currentStudies.length > 0 ? (
+          currentStudies.map((study) => (
+            <Col key={study.studyId}>
+              <StudyCard study={study} />
+            </Col>
+          ))
+        ) : (
+          <Col>
+            <p>검색 결과가 없습니다.</p>
           </Col>
-        ))}
+        )}
       </Row>
       <Row className="mt-4">
         <Pagination className="d-flex justify-content-center">
-        <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-            <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-            {[...Array(totalPages).keys()].map((number) => (
-                <Pagination.Item
-                key={number + 1}
-                active={number + 1 === currentPage}
-                onClick={() => handlePageChange(number + 1)}
-                >
-                {number + 1}
-                </Pagination.Item>
-            ))}
-            <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-            <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+          <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+          <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+          {[...Array(totalPages).keys()].map((number) => (
+            <Pagination.Item
+              key={number + 1}
+              active={number + 1 === currentPage}
+              onClick={() => handlePageChange(number + 1)}
+            >
+              {number + 1}
+            </Pagination.Item>
+          ))}
+          <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+          <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
         </Pagination>
       </Row>
     </Container>

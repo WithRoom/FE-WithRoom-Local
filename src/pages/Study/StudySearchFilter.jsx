@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import DatePicker from 'react-datepicker';
@@ -71,63 +71,73 @@ const FilterOption = ({ label, options, selected, onChange }) => (
   </FilterSection>
 );
 
-const StudySearchFilter = ({ onFilterChange }) => {
+const StudySearchFilter = () => {
   const [filters, setFilters] = useState({
-    category: '',
+    topic: '',
     difficulty: '',
-    day: '',
+    weekDay: '',
     type: '',
-    status: '',
-    startDate: null,  // 검색 시작일
-    endDate: null     // 검색 종료일
+    state: '',
   });
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchResults, setSearchResults] = useState([]); // State for search results
 
   const handleFilterChange = (category, value) => {
-    const newFilters = { ...filters, [category]: value };
+    const newFilters = { ...filters, category: value };
     setFilters(newFilters);
-    onFilterChange(newFilters); // 부모 컴포넌트에 필터 변경 알림
-  };
-
-  const handleDateChange = (startDate, endDate) => {
-    const newFilters = { ...filters, startDate, endDate };
-    setFilters(newFilters);
-    onFilterChange(newFilters); // 날짜 변경 시 필터 업데이트
+    onFilterChange(newFilters); // 필터 변경 시 검색 결과 업데이트
   };
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const onFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    fetchSearchResults(newFilters);
+  };
+
   const resetFilters = () => {
     const initialFilters = {
-      category: '',
+      topic: '',
       difficulty: '',
-      day: '',
+      weekDay: '',
       type: '',
-      status: '',
-      startDate: null,
-      endDate: null,
+      state: ''
     };
     setFilters(initialFilters);
     onFilterChange(initialFilters); // 초기화 시 필터 상태 업데이트
   };
 
-  const handleSearch = () => {
+  const fetchSearchResults = (filters) => {
     console.log(filters);
 
-    axios.post('/study/search', filters, {
+    // 필터 값이 비어 있거나 null인 항목을 제거
+    const filteredParams = Object.fromEntries(
+      Object.entries(filters).filter(([key, value]) => value !== '' && value !== null)
+    );
+
+    axios.get('/home/filter/info', {
+      params: filteredParams,
       headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
       .then((response) => {
         console.log('Search response:', response.data);
-        setSearchResults(response.data); // Update the state with the search results
+        setSearchResults(Array.isArray(response.data.homeStudyInfoList) ? response.data : []); 
       })
       .catch((error) => {
         console.error('Error during search request:', error);
+        setSearchResults([]); // 오류 발생 시 빈 배열로 설정
       });
   };
+
+  const handleSearch = () => {
+    fetchSearchResults(filters);
+  };
+
+  useEffect(() => {
+    console.log('Search results updated:', searchResults);
+  }, [searchResults]);
 
   return (
     <>
@@ -140,43 +150,12 @@ const StudySearchFilter = ({ onFilterChange }) => {
         </FilterHeader>
         {!isCollapsed && (
           <Row>
-            <Col md={6}>
-              {/* 날짜 선택 필터 추가 */}
-              <FilterSection>
-                <FilterLabel>검색 시작일</FilterLabel>
-                <DatePicker
-                  selected={filters.startDate}
-                  onChange={(date) => handleDateChange(date, filters.endDate)}
-                  selectsStart
-                  startDate={filters.startDate}
-                  endDate={filters.endDate}
-                  placeholderText="검색 시작일 선택"
-                  dateFormat="yyyy-MM-dd"
-                />
-              </FilterSection>
-            </Col>
-            <Col md={6}>
-              <FilterSection>
-                <FilterLabel>검색 종료일</FilterLabel>
-                <DatePicker
-                  selected={filters.endDate}
-                  onChange={(date) => handleDateChange(filters.startDate, date)}
-                  selectsEnd
-                  startDate={filters.startDate}
-                  endDate={filters.endDate}
-                  minDate={filters.startDate}
-                  placeholderText="검색 종료일 선택"
-                  dateFormat="yyyy-MM-dd"
-                />
-              </FilterSection>
-            </Col>
-            <Col md={6}>
+            <Col md={12}>
               {Object.entries({
-                category: ['주제', '개념학습', '응용/활용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'],
+                topic: ['주제', '개념학습', '응용/활용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'],
                 difficulty: ['난이도', '초급', '중급', '고급'],
-                day: ['요일', '월', '화', '수', '목', '금', '토', '일'],
-                type: ['유형', '오프라인', '온라인'],
-                status: ['상태', '모집 중', '진행 중', '완료']
+                endDay: ['요일', '월', '화', '수', '목', '금', '토', '일'],
+                type: ['유형', '오프라인', '온라인']
               }).map(([key, options]) => (
                 <FilterOption
                   key={key}
@@ -199,13 +178,11 @@ const StudySearchFilter = ({ onFilterChange }) => {
         )}
       </FilterContainer>
 
-      {/* Render search results */}
       <Container>
         <Row>
-          {searchResults.map((result, index) => (
+          {Array.isArray(searchResults) && searchResults.map((result, index) => (
             <Col key={index} md={4}>
               <div className="search-result-item">
-                {/* Customize this part to display your search result */}
                 <h5>{result.title}</h5>
                 <p>{result.description}</p>
               </div>
