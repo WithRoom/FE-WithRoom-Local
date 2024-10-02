@@ -12,18 +12,15 @@ import Me from './pages/Home/Me';
 import StudyDetail from './pages/Study/StudyDetail';
 import StudyList from './pages/Study/StudyList';
 
-
 const App = () => {
   useEffect(() => {
     const onBeforeUnload = (event) => {
       const isReload = sessionStorage.getItem('isReload');
       if (!isReload) {
-        // 브라우저가 닫힐 때만 localStorage 초기화
         localStorage.clear();
       }
     };
   
-    // 새로고침 시 sessionStorage에 값을 설정
     const clearLocalStorageOnClose = () => {
       sessionStorage.setItem('isReload', 'true');
     };

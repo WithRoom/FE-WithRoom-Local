@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
 import styled from 'styled-components';
-import DatePicker from 'react-datepicker';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
 
@@ -71,7 +70,7 @@ const FilterOption = ({ label, options, selected, onChange }) => (
   </FilterSection>
 );
 
-const StudySearchFilter = () => {
+const StudySearchFilter = ({ updateStudies }) => {
   const [filters, setFilters] = useState({
     topic: '',
     difficulty: '',
@@ -80,12 +79,13 @@ const StudySearchFilter = () => {
     state: '',
   });
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [searchResults, setSearchResults] = useState([]); // State for search results
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleFilterChange = (category, value) => {
-    const newFilters = { ...filters, category: value };
+    const newFilters = { ...filters, [category]: filters[category] === value ? '' : value };
     setFilters(newFilters);
-    onFilterChange(newFilters); // 필터 변경 시 검색 결과 업데이트
+    onFilterChange(newFilters); 
   };
 
   const toggleCollapse = () => {
@@ -106,28 +106,34 @@ const StudySearchFilter = () => {
       state: ''
     };
     setFilters(initialFilters);
-    onFilterChange(initialFilters); // 초기화 시 필터 상태 업데이트
+    onFilterChange(initialFilters); 
   };
 
   const fetchSearchResults = (filters) => {
     console.log(filters);
+    setLoading(true);
 
-    // 필터 값이 비어 있거나 null인 항목을 제거
     const filteredParams = Object.fromEntries(
       Object.entries(filters).filter(([key, value]) => value !== '' && value !== null)
     );
 
-    axios.get('/home/filter/info', {
-      params: filteredParams,
+    const queryString = new URLSearchParams(filteredParams).toString();
+
+    axios.get(`/home/filter/info?${queryString}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
       .then((response) => {
         console.log('Search response:', response.data);
-        setSearchResults(Array.isArray(response.data.homeStudyInfoList) ? response.data : []); 
+        setSearchResults(Array.isArray(response.data.homeStudyInfoList) ? response.data.homeStudyInfoList : []); 
+        updateStudies(Array.isArray(response.data.homeStudyInfoList) ? response.data.homeStudyInfoList : []);
       })
       .catch((error) => {
         console.error('Error during search request:', error);
-        setSearchResults([]); // 오류 발생 시 빈 배열로 설정
+        setSearchResults([]);
+        updateStudies([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -154,7 +160,7 @@ const StudySearchFilter = () => {
               {Object.entries({
                 topic: ['주제', '개념학습', '응용/활용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'],
                 difficulty: ['난이도', '초급', '중급', '고급'],
-                endDay: ['요일', '월', '화', '수', '목', '금', '토', '일'],
+                weekDay: ['요일', '월', '화', '수', '목', '금', '토', '일'],
                 type: ['유형', '오프라인', '온라인']
               }).map(([key, options]) => (
                 <FilterOption
@@ -170,26 +176,13 @@ const StudySearchFilter = () => {
               <ResetButton variant="outline-secondary" onClick={resetFilters}>
                 초기화
               </ResetButton>
-              <SearchButton variant="primary" onClick={handleSearch}>
-                검색
+              <SearchButton variant="primary" onClick={handleSearch} disabled={loading}>
+                {loading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : '검색'}
               </SearchButton>
             </Col>
           </Row>
         )}
       </FilterContainer>
-
-      <Container>
-        <Row>
-          {Array.isArray(searchResults) && searchResults.map((result, index) => (
-            <Col key={index} md={4}>
-              <div className="search-result-item">
-                <h5>{result.title}</h5>
-                <p>{result.description}</p>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </Container>
     </>
   );
 };
