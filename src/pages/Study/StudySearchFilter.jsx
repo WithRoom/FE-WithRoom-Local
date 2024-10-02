@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, CircularProgress, Typography, Box } from '@mui/material';
+import { Container, Grid, Button, CircularProgress, Typography } from '@mui/material';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
 import styled from '@emotion/styled';
@@ -14,7 +14,7 @@ const FilterContainer = styled(Container)`
   max-height: ${props => props.isCollapsed ? '60px' : '1000px'};
 `;
 
-const FilterHeader = styled(Box)`
+const FilterHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,7 +22,8 @@ const FilterHeader = styled(Box)`
 `;
 
 const FilterTitle = styled(Typography)`
-  color: black;
+  color: #000000;
+  justify-content: space-between;
   font-weight: bold;
   margin-bottom: 0;
 `;
@@ -50,12 +51,6 @@ const ResetButton = styled(Button)`
 const SearchButton = styled(Button)`
   margin-top: 20px;
   width: 100%;
-`;
-
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
 `;
 
 const FilterOption = ({ label, options, selected, onChange }) => (
@@ -154,37 +149,42 @@ const StudySearchFilter = ({ updateStudies }) => {
   return (
     <FilterContainer isCollapsed={isCollapsed}>
       <FilterHeader isCollapsed={isCollapsed}>
-        <Box display="flex" justifyContent="center" flexGrow={1}>
-          <FilterTitle variant="h5">스터디 검색 필터</FilterTitle>
-        </Box>
+        <FilterTitle variant="h5">스터디 검색 필터</FilterTitle>
         <ToggleButton variant="outlined" onClick={toggleCollapse}>
           {isCollapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
         </ToggleButton>
       </FilterHeader>
       {!isCollapsed && (
-        <GridContainer>
-          {Object.entries({
-            topic: ['주제', '개념학습', '응용/활용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'],
-            difficulty: ['난이도', '초급', '중급', '고급'],
-            weekDay: ['요일', '월', '화', '수', '목', '금', '토', '일'],
-            type: ['유형', '오프라인', '온라인']
-          }).map(([key, options]) => (
-            <FilterOption
-              key={key}
-              label={options[0]}
-              options={options.slice(1)}
-              selected={filters[key]}
-              onChange={(value) => handleFilterChange(key, value)}
-            />
-          ))}
-
-          <ResetButton variant="outlined" onClick={resetFilters}>
-            초기화
-          </ResetButton>
-          <SearchButton variant="contained" onClick={handleSearch} disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : '검색'}
-          </SearchButton>
-        </GridContainer>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {Object.entries({
+              topic: ['주제', '개념학습', '응용/활용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'],
+              difficulty: ['난이도', '초급', '중급', '고급'],
+              weekDay: ['요일', '월', '화', '수', '목', '금', '토', '일'],
+              type: ['유형', '오프라인', '온라인']
+            }).map(([key, options]) => (
+              <FilterOption
+                key={key}
+                label={options[0]}
+                options={options.slice(1)}
+                selected={filters[key]}
+                onChange={(value) => handleFilterChange(key, value)}
+              />
+            ))}
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <ResetButton variant="outlined" onClick={resetFilters}>
+                초기화
+              </ResetButton>
+            </Grid>
+            <Grid item xs={6}>
+              <SearchButton variant="contained" onClick={handleSearch} disabled={loading}>
+                {loading ? <CircularProgress size={24} /> : '검색'}
+              </SearchButton>
+            </Grid>
+          </Grid>
+        </Grid>
       )}
     </FilterContainer>
   );
