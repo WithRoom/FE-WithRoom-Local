@@ -4,6 +4,7 @@ import axios from 'axios';
 import StudyCard from './StudyCard';
 import Header from '../components/Header';
 import StudySearchFilter from './StudySearchFilter';
+import noSearchImg from '../../images/nosearch.png';
 
 const StudyList = () => {
   const [allStudies, setAllStudies] = useState([]);
@@ -45,19 +46,22 @@ const StudyList = () => {
       <Card>
          <StudySearchFilter updateStudies={updateStudies} />
       </Card>
-      <Row xs={1} md={2} lg={4} className="mt-4 g-4">
         {currentStudies.length > 0 ? (
-          currentStudies.map((study) => (
-            <Col key={study.studyId}>
-              <StudyCard study={study} />
-            </Col>
-          ))
-        ) : (
-          <Col>
-            <p>검색 결과가 없습니다.</p>
-          </Col>
-        )}
-      </Row>
+            <div className="mt-4 g-4 row row-cols-lg-4 row-cols-md-2 row-cols-1">
+              {currentStudies.map((study) => (
+                <div className="col" key={study.studyId}>
+                  <StudyCard study={study} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="d-flex justify-content-center align-items-center" style={{ height: '70vh', width: '100%' }}>
+              <div className="text-center">
+                <img src={noSearchImg} alt="noSearchImg" style={{ width: '300px', height: 'auto', marginBottom: '20px' }} />
+              </div>
+            </div>
+          )}
+
       <Row className="mt-4">
         <Pagination className="d-flex justify-content-center">
           <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />

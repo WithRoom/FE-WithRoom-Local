@@ -172,14 +172,19 @@ const StudySearchFilter = ({ updateStudies }) => {
                 />
               ))}
             </Col>
-            <Col md={6}>
-              <ResetButton variant="outline-secondary" onClick={resetFilters}>
-                초기화
-              </ResetButton>
-              <SearchButton variant="primary" onClick={handleSearch} disabled={loading}>
-                {loading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : '검색'}
-              </SearchButton>
-            </Col>
+            <Row>
+              <Col md={6}>
+                <ResetButton variant="outline-secondary" onClick={resetFilters}>
+                  초기화
+                </ResetButton>
+              </Col>
+              <Col md={6}>
+                <SearchButton variant="primary" onClick={handleSearch} disabled={loading}>
+                  {loading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : '검색'}
+                </SearchButton>
+              </Col>
+
+            </Row>
           </Row>
         )}
       </FilterContainer>
