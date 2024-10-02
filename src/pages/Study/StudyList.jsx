@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Container, Row, Col, Pagination } from 'react-bootstrap';
+import { Container, Grid, Pagination as MuiPagination, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
 import StudyCard from './StudyCard';
 import Header from '../components/Header';
@@ -36,7 +36,7 @@ const StudyList = () => {
   const indexOfFirstStudy = indexOfLastStudy - studiesPerPage;
   const currentStudies = allStudies.slice(indexOfFirstStudy, indexOfLastStudy);
 
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+  const handlePageChange = (event, pageNumber) => setCurrentPage(pageNumber);
 
   const totalPages = Math.ceil(allStudies.length / studiesPerPage);
 
@@ -44,41 +44,35 @@ const StudyList = () => {
     <Container>
       <Header />
       <Card>
-         <StudySearchFilter updateStudies={updateStudies} />
+        <CardContent>
+          <StudySearchFilter updateStudies={updateStudies} />
+        </CardContent>
       </Card>
-        {currentStudies.length > 0 ? (
-            <div className="mt-4 g-4 row row-cols-lg-4 row-cols-md-2 row-cols-1">
-              {currentStudies.map((study) => (
-                <div className="col" key={study.studyId}>
-                  <StudyCard study={study} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: '70vh', width: '100%' }}>
-              <div className="text-center">
-                <img src={noSearchImg} alt="noSearchImg" style={{ width: '300px', height: 'auto', marginBottom: '20px' }} />
-              </div>
-            </div>
-          )}
-
-      <Row className="mt-4">
-        <Pagination className="d-flex justify-content-center">
-          <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-          <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-          {[...Array(totalPages).keys()].map((number) => (
-            <Pagination.Item
-              key={number + 1}
-              active={number + 1 === currentPage}
-              onClick={() => handlePageChange(number + 1)}
-            >
-              {number + 1}
-            </Pagination.Item>
+      {currentStudies.length > 0 ? (
+        <Grid container spacing={4} className="mt-4">
+          {currentStudies.map((study) => (
+            <Grid item xs={12} md={6} lg={3} key={study.studyId}>
+              <StudyCard study={study} />
+            </Grid>
           ))}
-          <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-          <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
-        </Pagination>
-      </Row>
+        </Grid>
+      ) : (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '70vh', width: '100%' }}>
+          <div className="text-center">
+            <img src={noSearchImg} alt="noSearchImg" style={{ width: '300px', height: 'auto', marginBottom: '20px' }} />
+            <Typography variant="h6">No studies found</Typography>
+          </div>
+        </div>
+      )}
+      <Grid container justifyContent="center" className="mt-4">
+        <MuiPagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+        />
+      </Grid>
     </Container>
   );
 };
