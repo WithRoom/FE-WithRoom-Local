@@ -4,6 +4,8 @@ import { Card } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 
 const StudySchedule = ({ studyScheduleDetail }) => {
+  console.log('studyScheduleDetail',studyScheduleDetail);
+
   useEffect(() => {
     const currentDate = new Date().toISOString().split('T')[0];
     if (currentDate > studyScheduleDetail.endDay) {
