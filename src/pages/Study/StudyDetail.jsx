@@ -9,7 +9,8 @@ import {
   Book as BookIcon, 
   EmojiEvents as TrophyIcon, 
   LocalOffer as TagIcon,
-  Send as SendIcon
+  Send as SendIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -109,6 +110,32 @@ const StudyDetail = () => {
       Swal.fire({
         icon: 'error',
         title: '댓글 추가에 실패했습니다.',
+        text: error.message,
+      });
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await axios.post('/comment/delete', { commentId }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+
+      Swal.fire({
+        icon: 'success',
+        title: '댓글이 삭제되었습니다.',
+      });
+
+      const detailResponse = await axios.post('/study/info/detail', { studyId }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      });
+
+      setStudyCommentList(detailResponse.data.studyCommentList);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      Swal.fire({
+        icon: 'error',
+        title: '댓글 삭제에 실패했습니다.',
         text: error.message,
       });
     }
@@ -240,6 +267,9 @@ const StudyDetail = () => {
                             primary={comment.nickName}
                             secondary={comment.content}
                           />
+                          <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(comment.commentId)}>
+                            <DeleteIcon />
+                          </IconButton>
                         </ListItem>
                         {index < studyCommentList.length - 1 && <Divider variant="inset" component="li" />}
                       </React.Fragment>
