@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
-import { FaBook, FaTrophy, FaTags, FaPaperPlane } from 'react-icons/fa'; // Import the icon
+import { 
+  Container, Box, Grid, Card, CardContent, CardMedia, 
+  Typography, TextField, Button, Chip, Avatar,
+  List, ListItem, ListItemText, ListItemAvatar,
+  Divider, IconButton, Paper, FormControlLabel, Checkbox
+} from '@mui/material';
+import { 
+  Book as BookIcon, 
+  EmojiEvents as TrophyIcon, 
+  LocalOffer as TagIcon,
+  Send as SendIcon
+} from '@mui/icons-material';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import DOMPurify from 'dompurify';
@@ -9,99 +19,32 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import StudySchedule from './StudySchedule';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import styled from 'styled-components';
 
-const Title = styled.h1`
-  font-weight: bold;
-  text-align: center;
-  font-size: 24px;
-  font-family: 'Arial', sans-serif;
-  margin-bottom: 20px;
-`;
-
-const Content = styled.div`
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  margin-bottom: 20px;
-  line-height: 1.6;
-`;
-
-const IconText = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-`;
-
-const Icon = styled.span`
-  margin-right: 10px;
-`;
-
-const CommentForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  border: none;
-  overflow: hidden;
-  margin-top: 20px;
-`;
-
-const CommentInput = styled.textarea`
-  width: 100%;
-  min-height: 100px;
-  padding: 15px;
-  resize: vertical;
-  font-size: 14px;
-  &::placeholder {
-    color: #bbb;
-  }
-`;
-
-const SubmitButton = styled(Button)`
-  size: 8px;
-  align-self: flex-end;
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 12px;
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.3s ease;
-  background-color: #000000;
-  color: #ffffff;
-  border: 2px solid transparent;
-  
-  &:hover {
-    background-color: #black;
-    transform: scale(1.05);
-    color: #black;
-    font-size: 12px;
-    border-radius: 25px;
-    border: 2px solid #black;
-
-  }
-  
-  svg {
-    margin-left: 8px;
-  }
-`;
-
-const CommentCount = styled.div`
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
+const StyledCard = ({ children, ...props }) => (
+  <Card
+    {...props}
+    sx={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      boxShadow: 3,
+      borderRadius: 2,
+      ...props.sx
+    }}
+  >
+    {children}
+  </Card>
+);
 
 const StudyDetail = () => {
   const { studyId } = useContext(StudyContext);
-
   const [studyDetail, setStudyDetail] = useState(null);
   const [studyGroupLeader, setStudyGroupLeader] = useState(null);
   const [studyScheduleDetail, setStudyScheduleDetail] = useState(null);
   const [studyCommentList, setStudyCommentList] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isFinished, setIsFinished] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
 
   useEffect(() => {
     const fetchStudyDetail = async () => {
@@ -145,6 +88,7 @@ const StudyDetail = () => {
       await axios.post('/comment/create', {
         studyId,
         content: newComment,
+        isPrivate,
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
@@ -204,15 +148,17 @@ const StudyDetail = () => {
     return (
       <Container>
         <Header />
-        <Row className="my-4">
-          <Col md={8}>
-            <Skeleton height={200} />
-            <Skeleton count={5} style={{ marginTop: '10px' }} />
-          </Col>
-          <Col md={4}>
-            <Skeleton height={300} />
-          </Col>
-        </Row>
+        <Box sx={{ my: 4 }}>
+          <Grid container spacing={4}>
+            <Grid item md={8}>
+              <Skeleton height={200} />
+              <Skeleton count={5} />
+            </Grid>
+            <Grid item md={4}>
+              <Skeleton height={300} />
+            </Grid>
+          </Grid>
+        </Box>
         <Footer />
       </Container>
     );
@@ -223,87 +169,147 @@ const StudyDetail = () => {
   return (
     <Container>
       <Header />
-      <Row className="my-4">
-        <Col md={3}>
-          <Card className="mt-4 shadow-sm">
-            <Card.Img variant="top" src={studyDetail.studyImageUrl} alt={studyDetail.title} style={{ width: '100%', height: 'auto' }} />
-          </Card>
-        </Col>
-        <Col md={6}>
-          <Card className="mt-4 shadow-sm">
-            <Card.Body>
-              <Title>{studyDetail.title}</Title>
-              <Content dangerouslySetInnerHTML={{ __html: sanitizedIntroduction }} />
-              <IconText>
-                <Icon><FaBook /></Icon>
-                <span><strong>주제:</strong> {studyDetail.topic}</span>
-              </IconText>
-              <IconText>
-                <Icon><FaTrophy /></Icon>
-                <span><strong>난이도:</strong> {studyDetail.difficulty}</span>
-              </IconText>
-              <IconText>
-                <Icon><FaTags /></Icon>
-                <span><strong>태그:</strong> {studyDetail.tag}</span>
-              </IconText>
-            </Card.Body>
-          </Card>
-          <Row>
-            <Col md={12}>
-              <Card className="mt-4 shadow-sm">
-                <Card.Body>
-                  <Card.Title>그룹장 정보</Card.Title>
-                  <Card.Text><strong>이름:</strong> {studyGroupLeader.name}</Card.Text>
-                  <Card.Text><strong>선호 지역:</strong> {studyGroupLeader.preferredArea}</Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          <Card.Body>
-            <CommentCount>댓글 {studyCommentList.length}</CommentCount>
-            <ListGroup variant="flush">
-              {studyCommentList.map((comment, index) => (
-                <ListGroup.Item key={index} className="py-3">
-                  <Row className="align-items-center">
-                    <Col xs={10} md={11}>
-                      <div>[{comment.nickName}] {comment.content}</div>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-            <CommentForm onSubmit={handleCommentSubmit} className="d-flex flex-column">
-                  <CommentInput
-                    placeholder="댓글을 입력하세요."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="form-control mb-3" // adds some margin-bottom for spacing
-                  />
-                  
-                  <div className="d-flex justify-content-end">
-                    <SubmitButton variant="" type="submit" className="d-flex align-items-center no-border">
-                      <span>댓글 등록</span>
-                      <FaPaperPlane className="ml-2" />
-                    </SubmitButton>
-                  </div>
-          </CommentForm>
+      <Box sx={{ my: 2 }}>
+        <Grid container spacing={2}>
+        <Grid item xs={3} md={3}>
+            <StyledCard>
+              <CardMedia
+                component="img"
+                image={studyDetail.studyImageUrl}
+                alt={studyDetail.title}
+                sx={{
+                  width: '100%',        
+                  height: 'auto',    
+                  objectFit: 'cover',   
+                  borderRadius: '8px',  
+                }}
+              />
+            </StyledCard>
+          </Grid>
 
-          
-          </Card.Body>
-        </Col>
-        <Col md={3} className="mb-3">
-          <StudySchedule studyScheduleDetail={studyScheduleDetail} />
-          {isFinished ? (
-            <div className="mt-3 text-center text-danger">
-              마감된 스터디
-            </div>
-          ) : (
-            <Button variant="danger" className="mt-3" onClick={handleFinishStudy}>
-              스터디 마감
-            </Button>
-          )}
-        </Col>
-      </Row>
+          <Grid item xs={12} md={6}>
+            <StyledCard>
+              <CardContent>
+                <Typography variant="h4" component="h1" gutterBottom align="center">
+                  {studyDetail.title}
+                </Typography>
+                
+                <Typography variant="body1" paragraph>
+                  <div dangerouslySetInnerHTML={{ __html: sanitizedIntroduction }} />
+                </Typography>
+                
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <BookIcon color="primary" />
+                    <Typography><strong>주제:</strong> {studyDetail.topic}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <TrophyIcon color="primary" />
+                    <Typography><strong>난이도:</strong> {studyDetail.difficulty}</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <TagIcon color="primary" />
+                    <Typography component="span"><strong>태그:</strong></Typography>
+                    <Chip label={studyDetail.tag} variant="outlined" size="small" />
+                  </Box>
+                </Box>
+
+                <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6" gutterBottom>그룹장 정보</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Avatar>{studyGroupLeader.name[0]}</Avatar>
+                    <Box>
+                      <Typography><strong>이름:</strong> {studyGroupLeader.name}</Typography>
+                      <Typography><strong>선호 지역:</strong> {studyGroupLeader.preferredArea}</Typography>
+                    </Box>
+                  </Box>
+                </Paper>
+
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    댓글 {studyCommentList.length}
+                  </Typography>
+                  <List>
+                    {studyCommentList.map((comment, index) => (
+                      <React.Fragment key={index}>
+                        <ListItem alignItems="flex-start">
+                          <ListItemAvatar>
+                            <Avatar>{comment.nickName[0]}</Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={comment.nickName}
+                            secondary={comment.content}
+                          />
+                        </ListItem>
+                        {index < studyCommentList.length - 1 && <Divider variant="inset" component="li" />}
+                      </React.Fragment>
+                    ))}
+                  </List>
+                  
+                  <Box component="form" onSubmit={handleCommentSubmit} sx={{ mt: 2 }}>
+                    <TextField
+                      fullWidth
+                      multiline
+                      rows={3}
+                      placeholder="댓글을 입력하세요"
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      variant="outlined"
+                      inputProps={{ maxLength: 300 }}
+                      sx={{ mb: 1 }}
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ mr: 2 }}>
+                          {newComment.length}/300
+                        </Typography>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isPrivate}
+                              onChange={(e) => setIsPrivate(e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label="비밀댓글"
+                        />
+                      </Box>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        endIcon={<SendIcon />}
+                        disabled={!newComment.trim()}
+                      >
+                        댓글 등록
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
+              </CardContent>
+            </StyledCard>
+          </Grid>
+
+          <Grid item xs={12} md={3}>
+            <StudySchedule studyScheduleDetail={studyScheduleDetail} />
+            <Box sx={{ mt: 2 }}>
+              {isFinished ? (
+                <Typography color="error" variant="h6" align="center">
+                  마감된 스터디
+                </Typography>
+              ) : (
+                <Button 
+                  variant="contained" 
+                  color="error" 
+                  fullWidth 
+                  onClick={handleFinishStudy}
+                >
+                  스터디 마감
+                </Button>
+              )}
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
       <Footer />
     </Container>
   );
