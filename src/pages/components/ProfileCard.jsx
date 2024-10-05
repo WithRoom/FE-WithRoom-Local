@@ -1,10 +1,28 @@
-import React from 'react';
-import { Card, Badge } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Card } from 'react-bootstrap';
+import { Gear } from 'react-bootstrap-icons';
+import { Badge } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileCard = ({ name, preferredLocation, interests }) => {
-    console.log({ name, preferredLocation, interests }); // Log the props
-    return (
-      <Card className="profile-card">
+    const navigate = useNavigate();
+
+    const openProfile = () => {
+        navigate('/update/profile');
+    };
+
+    return ( 
+      <Card className="profile-card" style={{ position: 'relative' }}>
+         <div className="gear-icon" 
+             onClick={openProfile} 
+             style={{
+               position: 'absolute',
+               top: '10px',
+               right: '10px',
+               cursor: 'pointer'
+             }}>
+          <Gear size={20} />
+        </div>
         <Card.Header className="text-center">
           <div className="profile-avatar">
             <i className="bi bi-person"></i>
@@ -28,6 +46,6 @@ const ProfileCard = ({ name, preferredLocation, interests }) => {
         </Card.Body>
       </Card>
     );
-  };
+};
 
 export default ProfileCard;

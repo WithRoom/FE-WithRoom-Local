@@ -11,6 +11,7 @@ import PrivateRoute from './pages/common/PrivateRoute';
 import Me from './pages/Home/Me';
 import StudyDetail from './pages/Study/StudyDetail';
 import StudyList from './pages/Study/StudyList';
+import UpdateProfile from './pages/Home/UpdateProfile';
 
 const App = () => {
   useEffect(() => {
@@ -50,6 +51,7 @@ const App = () => {
             <Route path="/study/info/detail" element={<StudyDetail />} />
             <Route path="*" element={<NotFound to="/404" />} />
             <Route path="/study/list" element={<StudyList />} />
+            <Route path="/update/profile" element={<UpdateProfile />} />
           </Routes>
         </BrowserRouter>
       </div>
