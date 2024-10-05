@@ -16,6 +16,7 @@
     "bootstrap": "^5.3.3",
     "date-fns": "^2.29.3",
     "dompurify": "^3.1.6",
+    "formik": "^2.4.6",
     "http-proxy-middleware": "^3.0.0",
     "lucide-react": "^0.439.0",
     "react": "^18.3.1",
@@ -36,7 +37,8 @@
     "survey-react-ui": "^1.11.13",
     "sweetalert2": "^11.13.2",
     "swiper": "^11.1.14",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0"
   },
   "proxy": "https://studywithme.store",
   "scripts": {

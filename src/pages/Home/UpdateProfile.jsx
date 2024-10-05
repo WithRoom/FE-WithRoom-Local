@@ -12,30 +12,75 @@ import {
   Box,
   Snackbar
 } from '@mui/material';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import SelectComponent from '../Register/SelectComponent';
 import SelectInterestComponent from '../Register/SelectInterestComponent';
+
+const validationSchema = yup.object({
+  name: yup.string('Enter your name').required('Name is required'),
+  nickName: yup.string('Enter your nickname').required('Nickname is required'),
+  preferredArea: yup.string('Enter your preferred area').required('Preferred area is required'),
+  interest: yup.string('Enter your interest').required('Interest is required')
+});
 
 export default function UpdateProfile() {
   const location = useLocation();
   const navigate = useNavigate();
   const { combinedString = "", selectedInterest = "" } = location.state || {};
 
-  const [formState, setFormState] = useState({
-    nickName: '',
-    preferredArea: combinedString,
-    interest: selectedInterest,
-    areaSelections: {
-      category: '',
-      city: '',
-      district: '',
-      town: ''
-    }
-  });
-  
   const [status, setStatus] = useState({
     loading: false,
     error: '',
     success: false
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      nickName: '',
+      preferredArea: combinedString,
+      interest: selectedInterest,
+      areaSelections: {
+        category: '',
+        city: '',
+        district: '',
+        town: ''
+      }
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      setStatus({ loading: true, error: '', success: false });
+      
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        setStatus({
+          loading: false,
+          error: '로그인이 필요합니다.',
+          success: false
+        });
+        return;
+      }
+
+      try {
+        await saveUser('/member/mypage/update', {
+          name: values.name,
+          nickName: values.nickName,
+          preferredArea: values.preferredArea,
+          interest: values.interest
+        }, token);
+        
+        setStatus({ loading: false, error: '', success: true });
+        setTimeout(() => navigate('/home'), 2000);
+      } catch (error) {
+        const errorMessage = getErrorMessage(error);
+        setStatus({
+          loading: false,
+          error: errorMessage,
+          success: false
+        });
+      }
+    }
   });
 
   useEffect(() => {
@@ -57,7 +102,7 @@ export default function UpdateProfile() {
           }
         });
         const data = response.data;
-        setFormState({
+        formik.setValues({
           name: data.name,
           nickName: data.nickName,
           preferredArea: data.preferredArea,
@@ -82,15 +127,8 @@ export default function UpdateProfile() {
     fetchData();
   }, []);
 
-  const handleInputChange = (name, value) => {
-    setFormState(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const handleAreaChange = (type, value) => {
-    setFormState(prev => {
+    formik.setValues(prev => {
       const newAreaSelections = { 
         ...prev.areaSelections, 
         [type]: value 
@@ -108,40 +146,6 @@ export default function UpdateProfile() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus({ loading: true, error: '', success: false });
-    
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      setStatus({
-        loading: false,
-        error: '로그인이 필요합니다.',
-        success: false
-      });
-      return;
-    }
-
-    try {
-      await saveUser('/member/mypage/update', {
-        name : formState.name,
-        nickName: formState.nickName,
-        preferredArea: formState.preferredArea,
-        interest: formState.interest
-      }, token);
-      
-      setStatus({ loading: false, error: '', success: true });
-      setTimeout(() => navigate('/home'), 2000);
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      setStatus({
-        loading: false,
-        error: errorMessage,
-        success: false
-      });
-    }
-  };
-
   return (
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
@@ -150,28 +154,34 @@ export default function UpdateProfile() {
             추가 정보 입력
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            회원가입을 완료하기 위해 추가 정보를 입력해주세요.
+            정보 수정을 위해 아래 항목을 입력해주세요.
           </Typography>
         </Box>
 
-        <form onSubmit={handleSubmit}>
-            <TextField
-                fullWidth
-                label="이름"
-                value={formState.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder={formState.name}
-                required
-                sx={{ mb: 3 }}
-            />
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            fullWidth
+            label="이름"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            placeholder={formik.values.name}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
+            required
+            sx={{ mb: 3 }}
+          />
 
           <TextField
             fullWidth
             label="닉네임"
+            name="nickName"
             variant="outlined"
-            value={formState.nickName}
-            onChange={(e) => handleInputChange('nickName', e.target.value)}
-            placeholder={formState.nickName}
+            value={formik.values.nickName}
+            onChange={formik.handleChange}
+            placeholder={formik.values.nickName}
+            error={formik.touched.nickName && Boolean(formik.errors.nickName)}
+            helperText={formik.touched.nickName && formik.errors.nickName}
             required
             sx={{ mb: 3 }}
           />
@@ -186,9 +196,9 @@ export default function UpdateProfile() {
               onDistrictChange={(value) => handleAreaChange('district', value)}
               onTownChange={(value) => handleAreaChange('town', value)}
             />
-            {formState.preferredArea && (
+            {formik.values.preferredArea && (
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                입력한 선호 지역: {formState.preferredArea}
+                입력한 선호 지역: {formik.values.preferredArea}
               </Typography>
             )}
           </Box>
@@ -198,9 +208,14 @@ export default function UpdateProfile() {
               관심사
             </Typography>
             <SelectInterestComponent 
-              onChange={(value) => handleInputChange('interest', value)}
-              placeholder={formState.interest}
+              onChange={(value) => formik.setFieldValue('interest', value)}
+              placeholder={formik.values.interest}
             />
+            {formik.touched.interest && formik.errors.interest && (
+              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                {formik.errors.interest}
+              </Typography>
+            )}
           </Box>
 
           <Button
@@ -250,7 +265,7 @@ function getErrorMessage(error) {
     case 401:
       return '인증에 실패했습니다. 다시 로그인해주세요.';
     default:
-      return '회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      return '회원 정보 수정에 실패했습니다. 잠시 후 다시 시도해주세요.';
   }
 }
 
