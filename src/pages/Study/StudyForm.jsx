@@ -66,6 +66,7 @@ export default function StudyForm() {
   const studyTopics = ['개념학습', '응용/실용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'];
   const timeSlots = ['08:00 ~ 10:00', '10:00 ~ 12:00', '12:00 ~ 14:00', '14:00 ~ 16:00', 
                      '16:00 ~ 18:00', '18:00 ~ 20:00', '20:00 ~ 22:00'];
+  const periodSlots = ['1주', '1개월', '3개월', '6개월', '1년'];
 
   const handleChange = (field) => (event) => {
     setFormData({ ...formData, [field]: event.target.value });
@@ -139,19 +140,36 @@ export default function StudyForm() {
           time: formData.time,
         },
       };
-
-      await axios.post('/study/create', finalFormData, {
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
       Swal.fire({
-        icon: 'success',
-        title: '스터디 생성 완료!',
+        title: "모든 필드를 다 채우셨나요?",
+        text: "스터디 생성 후 수정이 불가능합니다.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "생성",
+        cancelButtonText: "취소",
+      }).then((result) => {
+        axios.post('/study/create', finalFormData, {
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': `Bearer ${token}`
+          }
+        }).then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: '스터디 생성 완료!',
+            text : '홈으로 이동합니다.'
+          });
+          navigate('/home');
+        }).catch((error) => {
+          Swal.fire({
+            icon: 'fail',
+            title: '스터디 생성 실패'
+          });
+        });
+        
       });
-      navigate('/home');
     } catch (error) {
       console.error("Error during form submission:", error);
       Swal.fire({
@@ -281,7 +299,7 @@ export default function StudyForm() {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <FormControl fullWidth>
                 <InputLabel>스터디 시간</InputLabel>
                 <Select
@@ -290,6 +308,20 @@ export default function StudyForm() {
                   label="스터디 시간"
                 >
                   {timeSlots.map((slot) => (
+                    <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel>스터디 기간</InputLabel>
+                <Select
+                  value={formData.duration}
+                  onChange={handleChange('duration')}
+                  label="스터디 시간"
+                >
+                  {periodSlots.map((slot) => (
                     <MenuItem key={slot} value={slot}>{slot}</MenuItem>
                   ))}
                 </Select>

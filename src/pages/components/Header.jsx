@@ -144,7 +144,7 @@ const Header = () => {
             <div>
             <div className="bg-yellow-300 p-4 text-center">
                 <h2 className="text-xl font-bold mb-4 ">
-                  ※서비스 이용 전 반드시 채널 추가 후 이용해주세요※
+                  ※서비스 이용에 관한 문의는 아래 채널을 통해 가능합니다.※
                 </h2>
                 <a 
                   href="http://pf.kakao.com/_xdxbzIn" 

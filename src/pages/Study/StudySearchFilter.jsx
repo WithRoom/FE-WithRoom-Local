@@ -161,7 +161,7 @@ const StudySearchFilter = ({ updateStudies }) => {
               topic: ['주제', '개념학습', '응용/활용', '프로젝트', '챌린지', '자격증/시험', '취업/코테', '특강', '기타'],
               difficulty: ['난이도', '초급', '중급', '고급'],
               weekDay: ['요일', '월', '화', '수', '목', '금', '토', '일'],
-              type: ['유형', '오프라인', '온라인']
+              type: ['유형', 'OFFLINE', 'ONLINE']
             }).map(([key, options]) => (
               <FilterOption
                 key={key}
