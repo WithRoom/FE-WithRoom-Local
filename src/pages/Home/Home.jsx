@@ -22,11 +22,17 @@ const Home = () => {
     <>
       <Container>
   <Row>
-    {studies.slice(0, 7).map((study) => (
-      <Col key={study.studyId} md={3} className="mb-3">
-        <StudyCard study={study} />
-      </Col>
-    ))}
+      {studies && studies.length > 0 ? (
+        studies.slice(0, 7).map((study) => (
+          <Col key={study.studyId} md={3} className="mb-3">
+            <StudyCard study={study} />
+          </Col>
+        ))
+      ) : (
+        <Col md={12} className="mb-3">
+          <p>No studies available.</p> 
+        </Col>
+      )}
     <Col>
       <Link to="/study/list">
         {studies.length > 6 && (
@@ -108,7 +114,6 @@ const Home = () => {
           <Row className="justify-content-center mb-4">
             {isAuthenticated ? (
               <Col>
-                {/* <h2>{nickName}</h2> */}
               </Col>
             ) : (
               <Col>
