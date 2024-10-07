@@ -19,36 +19,35 @@ const Home = () => {
   const [studies, setStudies] = useState([]);
 
   const homeStudyList = ({ studies }) => (
-    <>
-      <Container>
-  <Row>
-      {studies && studies.length > 0 ? (
-        studies.slice(0, 7).map((study) => (
-          <Col key={study.studyId} md={3} className="mb-3">
-            <StudyCard study={study} />
-          </Col>
-        ))
-      ) : (
-        <Col md={12} className="mb-3">
-          <p>No studies available.</p> 
-        </Col>
-      )}
-    <Col>
-      <Link to="/study/list">
-        {studies.length > 6 && (
-          <div className="bg-white rounded-lg p-4 flex flex-col items-center justify-center h-full cursor-pointer border:1px">
-          <ChevronRight className="w-12 h-12 text-blue-500 mb-3" />
-          <p className="text-lg font-bold text-center text-gray-800">
-            스터디를 더 보러 가볼까요?
-          </p>
-        </div>
-        )}
-      </Link>
-    </Col>
-  </Row>
-</Container>
-    </>
-  );
+    <Container>
+        <Row>
+            {Array.isArray(studies) && studies.length > 0 ? (
+                studies.slice(0, 7).map((study) => (
+                    <Col key={study.studyId} md={3} className="mb-3">
+                        <StudyCard study={study} />
+                    </Col>
+                ))
+            ) : (
+                <Col md={12} className="mb-3">
+                    <p>No studies available.</p> 
+                </Col>
+            )}
+            <Col>
+                <Link to="/study/list">
+                    {studies.length > 6 && (
+                        <div className="bg-white rounded-lg p-4 flex flex-col items-center justify-center h-full cursor-pointer border:1px">
+                            <ChevronRight className="w-12 h-12 text-blue-500 mb-3" />
+                            <p className="text-lg font-bold text-center text-gray-800">
+                                스터디를 더 보러 가볼까요?
+                            </p>
+                        </div>
+                    )}
+                </Link>
+            </Col>
+        </Row>
+    </Container>
+);
+
 
   const checkAuth = async () => {
     try {
@@ -81,15 +80,16 @@ const Home = () => {
 
   const fetchStudies = async () => {
     try {
-      const response = await axios.get('/home/info', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-      });
-      console.log('studies', response.data);
-      setStudies(response.data.homeStudyInfoList);
+        const response = await axios.get('/home/info', {
+            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+        });
+        console.log('studies', response.data);
+        setStudies(Array.isArray(response.data.homeStudyInfoList) ? response.data.homeStudyInfoList : []);
     } catch (error) {
-      console.error('스터디 목록 가져오기 중 오류 발생:', error);
+        console.error('스터디 목록 가져오기 중 오류 발생:', error);
     }
-  };
+};
+
 
   useEffect(() => {
     checkAuth();
