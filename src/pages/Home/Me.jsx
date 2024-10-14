@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import ProfileCard from "../components/ProfileCard";
-import MyInfo from "./MyInfo"; // Import the MyInfo component
+import MyInfo from "./MyInfo"; 
 import { Container, Row, Col } from "react-bootstrap";
 import '../css/ProfileCard.css';
 

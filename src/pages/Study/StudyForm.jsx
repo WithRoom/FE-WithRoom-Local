@@ -58,6 +58,7 @@ export default function StudyForm() {
     description: '',
     difficulty: '',
     searchTags: '',
+    kakaoOpenChatUrl: '',
     image: null,
     imagePreview: null
   });
@@ -131,6 +132,7 @@ export default function StudyForm() {
           topic: formData.topic,
           difficulty: formData.difficulty,
           tag: formData.searchTags,
+          kakaoOpenChatUrl : formData.kakaoOpenChatUrl
         },
         studySchedule: {
           weekDay: formData.days.join(', '),
@@ -140,6 +142,9 @@ export default function StudyForm() {
           time: formData.time,
         },
       };
+
+      console.log(finalFormData);
+
       Swal.fire({
         title: "모든 필드를 다 채우셨나요?",
         text: "스터디 생성 후 수정이 불가능합니다.",
@@ -218,6 +223,15 @@ export default function StudyForm() {
                 value={formData.title}
                 onChange={handleChange('title')}
                 helperText={`${formData.title.length}/50`}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="카카오 오픈 채팅 URL"
+                value={formData.kakaoOpenChatUrl}
+                onChange={handleChange('kakaoOpenChatUrl')}
+                placeholder='카카오 오픈 채팅 URL을 입력해주세요.'
               />
             </Grid>
             <Grid item xs={12}>

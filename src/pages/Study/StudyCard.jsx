@@ -1,17 +1,57 @@
 import React, { useState, useContext } from 'react';
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, Modal } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, Users, XCircle } from 'lucide-react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { StudyContext } from './StudyContext';
+import BeatLoader from 'react-spinners/BeatLoader';
+
+
+function ApplicantModal({ nickName, preferredArea }) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+       <Button variant="primary" size="sm" onClick={handleShow}>
+        신청자 목록
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>신청자 목록</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Card>
+            <Card.Title>신청자 정보</Card.Title>
+            <Card.Text>
+              <strong>닉네임:</strong> {nickName}
+            </Card.Text>
+            <Card.Text>
+              <strong>선호 지역:</strong> {preferredArea}
+            </Card.Text>
+          </Card>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            닫기
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
 
 const LikeButton = ({ isLiked, setIsLiked, studyId }) => {
-  console.log(isLiked, setIsLiked, studyId);
-  const [studyIds, setStudyIds] = useState([]); 
-  const [checkLiked, setCheckLiked] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleLikeClick = () => {
+    setLoading(true); // Start loading
+
     axios
       .get("/study/mypage/info/mystudy", {
         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
@@ -19,67 +59,47 @@ const LikeButton = ({ isLiked, setIsLiked, studyId }) => {
       .then((response) => {
         const groupLeaderStudies = response.data.groupLeaderStudies;
         const isGroupLeader = groupLeaderStudies.some((study) => study.studyId === studyId);
-  
+
         if (isGroupLeader) {
           Swal.fire({
             icon: "error",
             title: "관심 생성 실패",
             text: "스터디 그룹장은 관심 추가할 수 없습니다.",
           });
-          return; // 그룹장일 경우 관심 생성 중단
+          setLoading(false); // End loading
+          return;
         }
-  
-        // 그룹장이 아닐 경우 관심 등록/취소 로직 진행
+
         axios
           .post("/study/interest", { studyId }, {
             headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
           })
           .then((response) => {
-            if (response.data === true) {
-              if (isLiked) {
-                Swal.fire({
-                  icon: "success",
-                  title: "관심이 취소되었습니다.",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                setIsLiked(false);
-              } else {
-                Swal.fire({
-                  icon: "success",
-                  title: "관심이 등록되었습니다.",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                setIsLiked(true);
-              }
-            }
-          })
-          .catch((error) => {
-            console.error("Error during interest request:", error);
             Swal.fire({
-              icon: "error",
-              title: "관심 등록에 실패했습니다.",
-              text: error.response ? error.response.data : "Unknown error",
+              icon: isLiked ? "success" : "error",
+              title: isLiked ? "관심이 취소되었습니다." : "관심이 등록되었습니다.",
+              showConfirmButton: false,
+              timer: 1500,
             });
-          });
+            setIsLiked(!isLiked);
+          })
+          .finally(() => setLoading(false)); // End loading
       })
       .catch((error) => {
         console.error("Error during get my study:", error);
+        setLoading(false); // End loading
       });
   };
-  
 
   return (
-    <Button
-      variant="link"
-      className="p-0"
-      onClick={handleLikeClick}
-    >
-      <Heart fill={isLiked ? "red" : "none"} color={isLiked ? "red" : "black"} />
-    </Button>
+    <>
+      <Button variant="link" className="p-0" onClick={handleLikeClick} disabled={loading}>
+        {loading ? <BeatLoader size={10} color="#9da503" /> : <Heart fill={isLiked ? "red" : "none"} color={isLiked ? "red" : "black"} />}
+      </Button>
+    </>
   );
 };
+
 
 const StudyImage = ({ src }) => (
   <Card.Img
@@ -128,31 +148,25 @@ const RecruitmentInfo = ({ nowPeople, recruitPeople }) => (
 );
 
 const ActionButton = ({ state, studyId }) => {
-  console.log(state, studyId);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const studyJoin = async () => {
+    setLoading(true); // Start loading
     try {
-      const response = await axios.post('/study/join', { studyId },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      const response = await axios.post('/study/join', { studyId }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
 
-      if (response.data === false) {
-        Swal.fire({
-          icon: 'error',
-          title: '스터디 신청 실패',
-          text: '그룹장이거나 이미 신청한 스터디입니다. 그룹장은 스터디에 참여할 수 없습니다.',
-        });
-      } else {
-        Swal.fire({
-          icon: 'success',
-          title: '스터디 신청 완료',
-          showConfirmButton: false,
-          timer: 1500
-        });
-      }
-
+      Swal.fire({
+        icon: response.data ? 'success' : 'error',
+        title: response.data ? '스터디 신청 완료' : '스터디 신청 실패',
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } catch (error) {
       console.error('Error joining study:', error);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -161,12 +175,13 @@ const ActionButton = ({ state, studyId }) => {
       variant="outline-primary"
       size="sm"
       onClick={state ? studyJoin : null}
-      disabled={!state}
+      disabled={!state || loading}
     >
-      {state ? "참여하기" : "마감됨"}
+      {loading ? <BeatLoader size={10} color="#9da503" /> : state ? "참여하기" : "마감됨"}
     </Button>
   );
 };
+
 
 const AcceptRejectButtons = ({ studyId, memberId, onAccept, onReject }) => {
   const handleAccept = async () => {
@@ -175,6 +190,12 @@ const AcceptRejectButtons = ({ studyId, memberId, onAccept, onReject }) => {
         { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       });
 
+      <BeatLoader
+      color="#9da503"
+      loading
+      margin={2}
+      size={10}
+     />
 
       Swal.fire({
         icon: 'success',
@@ -263,14 +284,17 @@ const StudyCard = ({ study, cardType }) => {
           <div className="d-flex justify-content-between align-items-center">
             <RecruitmentInfo nowPeople={study.nowPeople} recruitPeople={study.recruitPeople} />
             {cardType === 'request-join' ? (
-              <AcceptRejectButtons 
-                studyId={study.studyId} 
-                memberId={study.memberId}
-                onAccept={() => {navigate('/me');
-                }}
-                onReject={() => {navigate('/me');
-                }}
-              />
+              <>
+                <ApplicantModal nickName={study.nickName} preferredArea={study.preferredArea}/>
+                <AcceptRejectButtons 
+                  studyId={study.studyId} 
+                  memberId={study.memberId}
+                  onAccept={() => {navigate('/me');
+                  }}
+                  onReject={() => {navigate('/me');
+                  }}
+                />
+              </>
             ) : (
               <ActionButton state={study.state} studyId={study.studyId} />
             )}
