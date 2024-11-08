@@ -5,16 +5,26 @@ import StudyCard from './StudyCard';
 import Header from '../components/Header';
 import StudySearchFilter from './StudySearchFilter';
 import noSearchImg from '../../images/nosearch.png';
+import { useLocation } from 'react-router-dom';
 
 const StudyList = () => {
-  const [allStudies, setAllStudies] = useState([]);
+  const location = useLocation();
+
+  const initialStudies = location.state?.homeStudyInfoList || [];
+  const [allStudies, setAllStudies] = useState(initialStudies);
   const [currentPage, setCurrentPage] = useState(1);
 
   const studiesPerPage = 8;
 
   useEffect(() => {
-    fetchAllStudies();
-  }, []);
+    if (initialStudies.length === 0) {
+      fetchAllStudies();
+      return;
+    }else{
+      setAllStudies(initialStudies);
+      return;
+    }
+  }, [initialStudies]);
 
   const fetchAllStudies = async () => {
     try {
@@ -27,9 +37,10 @@ const StudyList = () => {
     }
   };
 
+  // Update studies list with search results
   const updateStudies = (filteredStudies) => {
     setAllStudies(filteredStudies);
-    setCurrentPage(1); // 검색 결과가 업데이트되면 첫 페이지로 이동
+    setCurrentPage(1); // Reset to first page on search update
   };
 
   const indexOfLastStudy = currentPage * studiesPerPage;
